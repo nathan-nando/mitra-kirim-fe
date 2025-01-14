@@ -1,0 +1,17 @@
+.hero {
+    margin-top: 10vh;
+    min-height: 70vh;
+}
+.hero h5{
+    line-height: 6vh;
+}
+
+.hero-content{
+    border: 1px #969696 solid
+
+}
+
+.hero-description{
+    color: var(--black);
+    line-height: 5vh;
+}
