@@ -23,7 +23,7 @@ export function Hero() {
             {getTitle()}
         </h5>
         <div className={"d-flex flex-row mt-5 hero-content"}>
-            <div className={"col"}>
+            <div className={"col ms-5"}>
                 <Image src={getImg()}
                        alt={""}
                        width={0}

@@ -6,7 +6,7 @@
     --foreground: #4F7942;
     --accent: #FFC000;
     --black: #4d4d4d;
-    --white: #ffffff;
+    --white: #fdfce5;
 }
 
 html,
@@ -36,6 +36,14 @@ a {
 
 .text-foreground{
  color: var(--foreground);
+}
+
+.text-black-custom{
+    color: var(--black);
+}
+
+.bg-white-custom{
+    background-color: var(--white);
 }
 
 .navbar-guest {

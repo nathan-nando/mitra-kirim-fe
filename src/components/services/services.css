@@ -1,0 +1,11 @@
+.services{
+    margin: 20vh 5vh 5vh 5vh;
+}
+
+.services-card{
+    border-radius: 10px 10px 10px 10px;
+}
+
+.service-image{
+    border-radius: 10px 10px 0 0;
+}
