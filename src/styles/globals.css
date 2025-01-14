@@ -34,15 +34,19 @@ a {
     text-decoration: none;
 }
 
-.text-foreground{
- color: var(--foreground);
+.text-foreground {
+    color: var(--foreground);
 }
 
-.text-black-custom{
+.bg-foreground {
+    background-color: var(--foreground) !important;
+}
+
+.text-black-custom {
     color: var(--black);
 }
 
-.bg-white-custom{
+.bg-white-custom {
     background-color: var(--white);
 }
 
@@ -52,9 +56,12 @@ a {
     min-height: 9vh;
 }
 
+.paragraph-justify {
+    text-indent: 1em;
+    text-align: justify;
+}
 
-
-.btn-whatsapp {
+.btn-foreground {
     background-color: var(--foreground) !important;
     color: var(--background) !important;
     padding: .5rem 1rem;

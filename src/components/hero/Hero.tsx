@@ -33,7 +33,7 @@ export function Hero() {
                        style={{width: '100%', height: '68vh'}}/>
             </div>
             <div className={"col ms-5 me-5 d-inline-block align-content-center"}>
-                <p className={"fs-5 hero-description"} style={{whiteSpace: "pre-wrap"}}>
+                <p className={"fs-5 hero-description paragraph-justify"} style={{whiteSpace: "pre-wrap"}}>
                     {getDescription()}
                 </p>
             </div>

@@ -1,3 +1,7 @@
+import {NavbarGuest} from "@/components/navbar/navbar-guest/NavbarGuest";
+
 export default function Page() {
-    return <h5>Test</h5>
+    return <>
+        <NavbarGuest/>
+    </>
 }

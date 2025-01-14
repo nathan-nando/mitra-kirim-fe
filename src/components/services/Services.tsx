@@ -32,8 +32,7 @@ export function Services() {
                 <div className={"text-center text-black-custom mt-4"}>
                     <h5 className={"fw-bolder text-foreground"}>{service.title}</h5>
                     <div className={"ps-5 pe-5 pb-4"}>
-                    <p className={"mt-4 mb-3"}>{service.description}</p>
-
+                    <p className={"mt-4 mb-3  "}>{service.description}</p>
                     </div>
                 </div>
             </div>
