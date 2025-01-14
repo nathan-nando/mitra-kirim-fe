@@ -8,7 +8,10 @@
 
 .hero-content{
     /*border: 1px #969696 solid*/
+}
 
+.hero-image{
+    border-radius: 5px;
 }
 
 .hero-description{

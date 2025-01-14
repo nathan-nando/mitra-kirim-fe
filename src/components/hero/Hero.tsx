@@ -28,6 +28,7 @@ export function Hero() {
                        alt={""}
                        width={0}
                        height={0}
+                       className={"hero-image"}
                        sizes={"100vw"}
                        style={{width: '100%', height: '68vh'}}/>
             </div>

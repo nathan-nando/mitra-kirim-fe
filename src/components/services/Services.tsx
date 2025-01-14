@@ -27,11 +27,11 @@ export function Services() {
                     src={`/images/${service.image}`}
                     alt={""} width={500} height={0}
                     className={"service-image"}
-                    style={{width: '100%', height: '48vh'}}
+                    style={{width: '100%', height: '45vh'}}
                 />
                 <div className={"text-center text-black-custom mt-4"}>
                     <h5 className={"fw-bolder text-foreground"}>{service.title}</h5>
-                    <div className={"ps-5 pe-5 pb-2"}>
+                    <div className={"ps-5 pe-5 pb-4"}>
                     <p className={"mt-4 mb-3"}>{service.description}</p>
 
                     </div>
