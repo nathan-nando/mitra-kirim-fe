@@ -2,10 +2,8 @@ import "./form-suggestion.css"
 
 export function FormSuggestion() {
     const header = "Kritik dan Saran"
-    const description = "Segera dapatkan penawaran menarik dan layanan terbaik untuk kebutuhan usaha hotel, restoran, dan cafe anda."
     return <div className={"form-suggestion d-flex flex-column gap-2 align-items-center text-black-custom"}>
         <h3>{header}</h3>
-        <p>{description}</p>
         <form className={"d-flex flex-column gap-4 col-5"}>
             <div className={"d-flex flex-row justify-content-between"}>
                 <div className="form-group col-5">
