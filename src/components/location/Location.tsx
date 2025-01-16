@@ -7,8 +7,6 @@ type location = {
 }
 
 export function Location() {
-    const getImg = () => `/images/hero.jpg`
-
     const listLocation: location[] = [
         {
             src: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.1581130408276!2d106.9133009!3d-6.242883!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e698d01021dd817%3A0xa938efce571d975c!2sSupplier%20Hotel%20Resto%20Kafe!5e0!3m2!1sid!2sid!4v1737031394108!5m2!1sid!2sid',

@@ -1,5 +1,6 @@
 import "./services.css"
 import Image from "next/image";
+import {Line} from "@/components/ui/line/Line";
 
 export function Services() {
     const servicesList: IServices[] = [
@@ -14,7 +15,7 @@ export function Services() {
             image: "service-2.jpg",
         },
         {
-            title: "Layanan Konsultasi Kebutuhan HORECA",
+            title: "Layanan Konsultasi HORECA",
             description: "Solusi operasional bisnis maupun pemilihan produk.\nMembantu menemukan barang yang tepat sesuai kebutuhan dan saran profesional",
             image: "service-3.jpg",
         },
@@ -31,8 +32,9 @@ export function Services() {
                 />
                 <div className={"text-center text-black-custom mt-4"}>
                     <h5 className={"fw-bolder text-foreground"}>{service.title}</h5>
+                    <Line />
                     <div className={"ps-5 pe-5 pb-4"}>
-                    <p className={"mt-4 mb-3  "}>{service.description}</p>
+                        <p className={"mt-4 mb-3  "}>{service.description}</p>
                     </div>
                 </div>
             </div>

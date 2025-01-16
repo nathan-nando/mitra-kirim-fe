@@ -35,11 +35,13 @@ a {
 }
 
 .text-foreground {
-    color: var(--foreground)!important;
+    color: var(--foreground) !important;
 }
+
 .text-background {
     color: var(--background);
 }
+
 .text-accent {
     color: var(--accent);
 }
@@ -52,6 +54,7 @@ a {
 .bg-foreground {
     background-color: var(--foreground) !important;
 }
+
 .bg-accent {
     background-color: var(--accent) !important;
 }
@@ -77,7 +80,20 @@ a {
     padding: .5rem 1rem;
 }
 
-.footer{
+hr {
+    margin: 1rem 0;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: 0.25;
+}
+
+.line-accent{
+    border: 4px var(--accent) solid;
+    border-radius: 20px;
+}
+
+.footer {
     padding: 50px;
     background-color: var(--foreground);
     min-height: 35vh;
