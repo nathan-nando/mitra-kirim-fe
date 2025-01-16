@@ -2,6 +2,12 @@ import "./services.css"
 import Image from "next/image";
 import {Line} from "@/components/ui/line/Line";
 
+type IServices = {
+    title: string
+    description: string
+    image: string
+}
+
 export function Services() {
     const servicesList: IServices[] = [
         {
@@ -23,31 +29,26 @@ export function Services() {
 
     const card = () => {
         return servicesList.map((service, index) => {
-            return <div className={"w-25 bg-white-custom services-card"} key={index}>
+            return <div className={"bg-white-custom services-card"} key={index}>
                 <Image
                     src={`/images/${service.image}`}
-                    alt={""} width={500} height={0}
+                    alt={""} width={500} height={500}
                     className={"service-image"}
-                    style={{width: '100%', height: '45vh'}}
                 />
-                <div className={"text-center text-black-custom mt-4"}>
-                    <h5 className={"fw-bolder text-foreground"}>{service.title}</h5>
-                    <Line />
-                    <div className={"ps-5 pe-5 pb-4"}>
-                        <p className={"mt-4 mb-3  "}>{service.description}</p>
-                    </div>
+                <div className={"text-center text-black-custom mt-4 ps-2 pe-2"}>
+                    <h5 className={"fw-bolder text-foreground "}>{service.title}</h5>
+                    <Line/>
+                    <p className={"mt-4 mb-3"}><small>{service.description}</small></p>
                 </div>
             </div>
         })
     }
 
-    return <div className={"services d-flex gap-5 justify-content-center"}>
-        {card()}
+    return <div className={"container services"}>
+        <h4 className={"text-center"}>Layanan Utama</h4>
+        <div className={"services-wrapper"}>
+            {card()}
+        </div>
     </div>
 }
 
-interface IServices {
-    title: string
-    description: string
-    image: string
-}

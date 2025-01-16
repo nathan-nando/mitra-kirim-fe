@@ -10,7 +10,7 @@ export function FormSuggestion() {
 
     return <div className={"form-suggestion d-flex flex-column gap-2 align-items-center text-black-custom "}>
         <Toaster richColors={true}/>
-        <h3>{header}</h3>
+        <h4>{header}</h4>
         <form
             action={async (formData: FormData) => {
                 let isValid: boolean = true
@@ -29,9 +29,10 @@ export function FormSuggestion() {
                     toast.success("Berhasil mengirim kritik dan saran")
 
 
-            }} className={"d-flex flex-column gap-4 col-5"}>
-            <div className={"d-flex flex-row justify-content-between"}>
-                <div className="form-group col-5">
+            }}
+            className={"d-flex flex-column gap-4 col-12 col-lg-6 p-3 p-lg-0"}>
+            <div className={"d-flex flex-column flex-lg-row justify-content-between"}>
+                <div className="form-group col-12 col-lg-5">
                     <label htmlFor="nameInput">Name</label>
                     <input type="text"
                            className="form-control"
@@ -40,7 +41,7 @@ export function FormSuggestion() {
                            aria-describedby="emailHelp"
                            placeholder="Enter name"/>
                 </div>
-                <div className="form-group col-5">
+                <div className="form-group  col-12 col-lg-5">
                     <label htmlFor="emailInput">Email address</label>
                     <input type="email"
                            className="form-control"
@@ -50,9 +51,8 @@ export function FormSuggestion() {
                            placeholder="Enter email"/>
                 </div>
             </div>
-            <div className="form-group">
+            <div className="">
                 <label htmlFor="nameInput">Message</label>
-                <div className="mb-3">
                     <textarea
                         className="form-control"
                         id="textareaMessage"
@@ -60,7 +60,6 @@ export function FormSuggestion() {
                         name="message"
                     >
                     </textarea>
-                </div>
             </div>
             <Button/>
         </form>

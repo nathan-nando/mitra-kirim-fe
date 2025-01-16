@@ -18,22 +18,21 @@ export function Hero() {
 
     return <div className={"hero"}>
         <h5
-            className={"text-center fw-bold fs-2"}
+            className={"text-center fw-bold "}
             style={{whiteSpace: "pre-wrap"}}>
             {getTitle()}
         </h5>
-        <div className={"d-flex flex-row mt-5 hero-content"}>
-            <div className={"col ms-5"}>
+        <div className={"d-flex flex-column flex-lg-row align-items-center mt-3 mt-md-5"}>
+            <div className={"col ms-0 ms-md-5"}>
                 <Image src={getImg()}
-                       alt={""}
-                       width={0}
-                       height={0}
-                       className={"hero-image"}
-                       sizes={"100vw"}
-                       style={{width: '100%', height: '68vh'}}/>
+                       alt={"mitra kirim"}
+                       width={1000}
+                       height={600}
+                       className={"hero-image bg-black"}
+                      />
             </div>
-            <div className={"col ms-5 me-5 d-inline-block align-content-center"}>
-                <p className={"fs-5 hero-description paragraph-justify"} style={{whiteSpace: "pre-wrap"}}>
+            <div className={"col ms-5 me-5 mt-3"}>
+                <p className={"hero-description paragraph-justify"} style={{whiteSpace: "pre-wrap"}}>
                     {getDescription()}
                 </p>
             </div>

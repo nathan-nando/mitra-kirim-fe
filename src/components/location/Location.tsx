@@ -21,7 +21,7 @@ export function Location() {
     ]
 
     return <>
-        <div id="carouselExampleIndicators" className="carousel slide mb-5" data-bs-ride="carousel">
+        <div id="carouselExampleIndicators" className="carousel slide mb-5 location" data-bs-ride="carousel">
             <div className="carousel-indicators mb-4">
                 <button type="button"
                         data-bs-target="#carouselExampleIndicators"

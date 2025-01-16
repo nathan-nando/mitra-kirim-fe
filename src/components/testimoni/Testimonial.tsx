@@ -31,13 +31,13 @@ export function Testimonial() {
 
     const card = () => {
         return list.map((v, index) => {
-            return <div key={index} className={"w-25 bg-white-custom testimonial-card"}>
-                <div className={"d-flex flex-column  text-left text-black-custom mt-1"}>
+            return <div key={index} className={"bg-white-custom testimonial-card"}>
+                <div className={"d-flex flex-column text-left text-black-custom mt-1"}>
                     <div className={"d-flex flex-row bg-white p-4  gap-4 rounded-4"}>
                         <Image
                             src={`/images/${v.img}`}
                             alt={""} width={100} height={100}
-                            className={"testimonial-image text-center"}
+                            className={"testimonial-image"}
                         />
                         <div className="d-flex flex-column justify-content-center ">
                             <p className={"text-left fw-bold text-foreground"}>{v.personName}</p>
@@ -51,15 +51,17 @@ export function Testimonial() {
     }
 
 
-    return <div className={"testimonial d-flex flex-column align-items-center"}>
-        <h1>{header}</h1>
-        <p className={"mt-3 text-black-custom"} style={{whiteSpace: "pre-wrap"}}>{description}</p>
-        <div className={"d-flex gap-5 justify-content-center"}>
+    return <div className={" container testimonial "}>
+        <h4 className={"text-center"}>{header}</h4>
+        <blockquote style={{whiteSpace: "pre-wrap"}}>{description}</blockquote>
+        <div className={"testimonial-wrapper "}>
             {card()}
         </div>
-        <Link href={"/testimonial"}>
-            <button type="button" className="btn btn-light btn-foreground mt-5">Lihat selengkapnya</button>
-        </Link>
+        <div className={"mx-auto"}>
+            <Link href={"/testimonial"}>
+                <button type="button" className="btn btn-light btn-foreground mt-4 mt-lg-5 ">Lihat selengkapnya</button>
+            </Link>
+        </div>
     </div>
 }
 

@@ -1,20 +1,43 @@
 .hero {
-    margin-top: 10vh;
+    margin-top: 5vh;
     min-height: 70vh;
 }
 .hero h5{
+    font-size: 1.9vw;
     line-height: 6vh;
-}
-
-.hero-content{
-    /*border: 1px #969696 solid*/
 }
 
 .hero-image{
     border-radius: 5px;
+    width: 50vw;
+    height: 30vw;
 }
 
 .hero-description{
     color: var(--black);
     line-height: 5vh;
+    font-size: 1.3vw;
+}
+
+@media (max-width: 768px) {
+    .hero{
+        margin-top: 1vh;
+        min-height: 7vh;
+        line-height: 1vh;
+    }
+    .hero h5{
+        font-size: 4vw;
+        line-height: 4vh;
+    }
+
+    .hero-image{
+        width: 60vw;
+        height: 60vw;
+    }
+
+    .hero-description{
+        color: var(--black);
+        line-height: 3vh;
+        font-size: 3vw;
+    }
 }
