@@ -1,5 +1,7 @@
 .form-suggestion {
     padding-top: 5vh;
+    padding-bottom: 5vh;
     margin-top: 10vh;
+    margin-bottom: 10vh;
     background-color: var(--white);
 }
