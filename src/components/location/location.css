@@ -1,17 +1,71 @@
 .location {
+    /*background-color: white;*/
     margin-top: 10vw;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
+
+/*.location-carousel {*/
+/*    width: 80%;*/
+/*}*/
+
+.location-carousel{
+    width: 85%;
+    border-radius: 10px;
+    padding: 4vw 0 0 0;
+    background-color: var(--foreground);
+    color: var(--accent);
+    text-align: center;
+    font-weight: bold
+;
+}
+
+.map-iframe {
+    padding-top: 1vw;
+    background-color: var(--foreground);
+    border: 1vw solid var(--foreground);
+    border-radius: 10px;
+    height: 40vw;
+}
+
+.map-description{
+    border-radius: 10px 10px 0 0;
+    width: 50vw;
+    /*height: 10vw;*/
+}
+
 
 .carousel-control-next,
 .carousel-control-prev /*, .carousel-indicators */
 {
-    filter: invert(100%);
+    height: 20vh;
+    /*background-color: white;*/
+    /*filter: invert(100%);*/
 }
 
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-    height: 70px;
-    width: 100px;
+    height: 4vw;
+    width: 10vw;
     background-size: 100%, 100%;
+}
+
+@media (max-width: 768px) {
+    .carousel-control-next,
+    .carousel-control-prev /*, .carousel-indicators */
+    {
+        height: 7vh;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        height: 4vw;
+        width: 14vw;
+        background-size: 100%, 100%;
+    }
+
 }

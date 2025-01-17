@@ -20,8 +20,9 @@ export function Location() {
         }
     ]
 
-    return <>
-        <div id="carouselExampleIndicators" className="carousel slide mb-5 location" data-bs-ride="carousel">
+    return <div className={"location"}>
+        <div id="carouselExampleIndicators" className="carousel slide mb-5 location-carousel" data-bs-ride="carousel">
+        <h4 className={"fw-bold"}>Lokasi kami</h4>
             <div className="carousel-indicators mb-4">
                 <button type="button"
                         data-bs-target="#carouselExampleIndicators"
@@ -36,17 +37,16 @@ export function Location() {
             </div>
             <div className="carousel-inner mx-auto ">
                 {listLocation.map((v, i) => {
-                    return <div key={i} className={`carousel-item ${i === 0 ? 'active' : ''}`}>
+                    return <div key={i} className={`carousel-item  ${i === 0 ? 'active' : ''}`}>
                         <iframe
-                            className={"w-100"}
-                            height="600"
+                            className={"w-100 map-iframe"}
                             src={v.src}
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade">
                         </iframe>
-                        <div className="shadow-sm p-4 mt-0 pb-0 bg-foreground text-background rounded-3 col-4 mx-auto carousel-caption d-none d-md-block">
+                        <div className="map-description p-4 mt-0 pb-0 bg-foreground text-background mx-auto carousel-caption d-none d-md-block">
                             <h5 className={"fw-bold pb-2 text-accent"}>{v.title}</h5>
-                            <p className={"paragraph-justify"}>{v.description}</p>
+                            <p className={"pb-4"}>{v.description}</p>
                         </div>
                     </div>
                 })}
@@ -66,5 +66,5 @@ export function Location() {
                 <span className="visually-hidden">Next</span>
             </button>
         </div>
-    </>
+    </div>
 }

@@ -16,7 +16,7 @@
 .hero-description{
     color: var(--black);
     line-height: 5vh;
-    font-size: 1.3vw;
+    font-size: 1.1vw;
 }
 
 @media (max-width: 768px) {
