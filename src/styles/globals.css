@@ -197,4 +197,9 @@ blockquote span {
         font-size: 3vw;
     }
 
+    .footer {
+        padding: 10vw;
+        background-color: var(--foreground);
+        min-height: 50vh;
+    }
 }

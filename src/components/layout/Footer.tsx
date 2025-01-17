@@ -3,7 +3,7 @@ export function Footer() {
 
     return <div className={"footer"}>
         <div className={"d-flex flex-row text-background"}>
-            <div className="col-4">
+            <div className="col-6 col-lg-4">
                 <h3 >{title}</h3>
             </div>
             <div className="col"></div>
