@@ -1,3 +1,3 @@
 export default function AccountAdm(){
-    return <h5>loc</h5>
+    return <h5>Account</h5>
 }

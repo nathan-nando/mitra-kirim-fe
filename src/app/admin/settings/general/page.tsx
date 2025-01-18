@@ -1,3 +1,3 @@
 export default function GeneralAdm(){
-    return <h5>loc</h5>
+    return <h5>General</h5>
 }

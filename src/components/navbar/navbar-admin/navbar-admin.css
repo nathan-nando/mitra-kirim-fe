@@ -1,0 +1,120 @@
+.sidebar {
+    background-color: var(--white);
+    min-height: 100vh;
+    width: 23vw;
+    max-width: 264px;
+    display: flex;
+    flex-direction: column;
+    transition: all .5s ease;
+}
+
+.sidebar.nav-collapsed {
+    width: 9vw;
+    transition: all .5s ease;
+}
+
+.sidebar.nav-collapsed .sidebar-link span {
+    display: none;
+    transition: all 0.35s ease;
+}
+
+.sidebar.nav-collapsed .sidebar-link{
+    justify-content: center;
+}
+
+.sidebar-content{
+    /*transition: all 10s ease-in;*/
+    margin-top: 2vw;
+}
+
+.sidebar-menu {
+    padding: 1px 0;
+    list-style: none;
+}
+
+.sidebar-header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem 1.5rem .375rem;
+}
+
+.sidebar-header img {
+    width: 7vw;
+    height: 7vw;
+}
+
+.sidebar-header i {
+    background-color: var(--foreground);
+    padding-left: 2px;
+    color: var(--white);
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: -10px;
+    -webkit-text-stroke: 2px var(--white);
+}
+
+a.sidebar-link {
+    border-radius: 10px;
+    /*background-color: black;*/
+    margin-left: 20px;
+    margin-right: 20px;
+    padding: .7vw 1vw;
+    color: var(--foreground);
+    position: relative;
+    display: flex;
+    gap: 15px;
+    font-size: 1.10vw;
+    font-weight: bold;
+}
+
+.sidebar-link-sub{
+    margin-left: 1.2vw;
+}
+
+a.sidebar-link:hover {
+    background-color: var(--accent);
+}
+
+.sidebar-link[data-bs-toggle="collapse"]::after {
+    border: solid;
+    border-width: 0 .075rem .075rem 0;
+    content: "";
+    display: inline-block;
+    padding: 2px;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.4rem;
+    transform: rotate(-135deg);
+    transition: all .2s ease-out;
+}
+
+.sidebar-link[data-bs-toggle="collapse"].collapsed::after {
+    transform: rotate(45deg);
+    transition: all .2s ease-out;
+}
+
+.sidebar-header i:hover {
+    cursor: pointer;
+}
+
+.sidebar-footer{
+    margin-top: auto;
+    /*top: 100%;*/
+}
+
+@media (max-width: 768px) {
+    /*.sidebar-toggle {*/
+    /*    margin-left: -264px;*/
+    /*}*/
+    /*.sidebar.nav-collapsed {*/
+    /*    margin-left: 0;*/
+    /*}*/
+}

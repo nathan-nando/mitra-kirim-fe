@@ -1,3 +1,4 @@
+
 export default function Admin(){
-    return <h5>ADMIN</h5>
+    return <h5>Dashboard</h5>
 }
