@@ -43,12 +43,12 @@ export const NavbarAdminData = (): NavbarType[] => {
             icon: "bi bi-gear-fill",
             children: [
                 {
-                    title: "general",
+                    title: "General",
                     link: "settings/general",
                     icon: "bi bi-map-fills"
                 },
                 {
-                    title: "account",
+                    title: "Account",
                     link: "settings/account",
                     icon: "bi bi-map-fills"
                 },

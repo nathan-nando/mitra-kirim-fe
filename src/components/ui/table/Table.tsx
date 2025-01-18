@@ -1,4 +1,11 @@
-export function TableUI() {
+type TableProps = {
+    fields: never[]
+    data: never[]
+}
+
+
+export function TableUI({fields, data}: TableProps) {
+    console.log(fields, data)
     return <table className="table">
         <thead>
         <tr>
@@ -23,7 +30,7 @@ export function TableUI() {
         </tr>
         <tr>
             <th scope="row">3</th>
-            <td >Larry the Bird</td>
+            <td>Larry the Bird</td>
             <td>@twitter</td>
         </tr>
         </tbody>

@@ -54,6 +54,11 @@ small {
     font-size: 1vw;
 }
 
+th, td {
+    font-size: 14px;
+    vertical-align: middle;
+}
+
 .text-foreground {
     color: var(--foreground) !important;
 }
@@ -155,6 +160,45 @@ blockquote span {
     margin-top: 1em;
 }
 
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:visited,
+.btn-primary:focus{
+    background-color: var(--foreground) !important;
+    color: white;
+    border: none;
+}
+.btn-primary:hover{
+    opacity: 0.9;
+}
+.btn-primary:active{
+    opacity: 0.7;
+}
+
+.btn-outline-primary,
+.btn-outline-primary:visited,
+.btn-outline-primary:focus{
+    background-color: white ;
+    color: var(--foreground);
+    border: none;
+}
+.btn-outline-primary:hover{
+    background-color: var(--foreground) !important;
+    color: white;
+}
+.btn-outline-primary:active{
+    background-color: #4F7942;
+    color: white;
+    opacity: 0.8;
+}
+
+.active{
+    background-color: var(--foreground) !important;
+    color: var(--background) !important;
+    border: 1px var(--accent);
+}
 
 @media (max-width: 768px) {
     body {

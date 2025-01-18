@@ -1,4 +1,6 @@
 .sidebar {
+    position: sticky;
+    top: 0;
     background-color: var(--white);
     min-height: 100vh;
     width: 23vw;
@@ -106,7 +108,7 @@ a.sidebar-link:hover {
 }
 
 .sidebar-footer{
-    margin-top: auto;
+    margin-top: 5vw;
     /*top: 100%;*/
 }
 
