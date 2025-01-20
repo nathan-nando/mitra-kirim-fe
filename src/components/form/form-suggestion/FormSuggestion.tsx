@@ -56,7 +56,7 @@ export function FormSuggestion() {
                     <textarea
                         className="form-control"
                         id="textareaMessage"
-                        rows={3}
+                        rows={7}
                         name="message"
                     >
                     </textarea>
