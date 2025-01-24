@@ -13,7 +13,7 @@ export const Detail = ({data}: DetailProps) => {
     return (
         <div className="flex flex-column gap-3 p-3">
             {Object.entries(data).map(([key, value]) => (
-                <div key={key} className="d-flex flex-row gap-3 align-items-start text-black-custom">
+                <div key={key} className="d-flex flex-row gap-3 align-items-start text-black-custom mb-1">
                     {/* Key */}
                     <span className="key" style={{minWidth: "150px"}}>
             {camelCaseToReadable(key)}

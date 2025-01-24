@@ -1,12 +1,12 @@
 import {useFormStatus} from "react-dom";
 
-export default function Button() {
+export default function Button({name= "Submit"}) {
     const {pending} = useFormStatus()
 
     return <button
         disabled={pending}
         type={"submit"}
         className={"btn btn-foreground"}>
-        {pending ? "Submitting..." : "Submit"}
+        {pending ? `${name}...` : name}
     </button>
 }

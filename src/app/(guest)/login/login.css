@@ -1,0 +1,20 @@
+.login-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    padding-top: 8vw;
+    overflow: hidden;
+    background-size: 200px;
+}
+
+.login-form {
+    overflow: hidden;
+    width: 40vw;
+    height: 64vh;
+    margin-right: 5vw;
+    border-radius: 20px;
+    padding: 5vw;
+    background-color: white;
+
+}

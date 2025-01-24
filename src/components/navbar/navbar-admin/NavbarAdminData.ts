@@ -5,23 +5,23 @@ export const NavbarAdminData = (): NavbarType[] => {
             link: "",
             icon: "bi bi-house-fill"
         },
-        {
-            title: "Layout",
-            link: "#",
-            icon: "bi bi-layers-fill",
-            children: [
-                {
-                    title: "Hero",
-                    link: "layout/hero",
-                    icon: "bi bi-layers-fill",
-                },
-                {
-                    title: "Services",
-                    link: "layout/services",
-                    icon: "bi bi-layers-fill",
-                }
-            ]
-        },
+        // {
+        //     title: "Layout",
+        //     link: "#",
+        //     icon: "bi bi-layers-fill",
+        //     children: [
+        //         {
+        //             title: "Hero",
+        //             link: "layout/hero",
+        //             icon: "bi bi-layers-fill",
+        //         },
+        //         {
+        //             title: "Services",
+        //             link: "layout/services",
+        //             icon: "bi bi-layers-fill",
+        //         }
+        //     ]
+        // },
         {
             title: "Suggestion",
             link: "suggestion",

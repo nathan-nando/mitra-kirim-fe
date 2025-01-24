@@ -116,17 +116,17 @@ export function TableUI({ fields, data, onAdd, onUpdate, onDelete, onView, loadi
         <div>
             {loading ? <HorizontalLineLoading /> : <></>}
             {/* Search Input and Add Button */}
-            <div className="mt-4 d-flex justify-content-between mb-3 col-6">
+            <div className="mt-4 d-flex justify-content-between mb-3 col-12">
                 <input
                     type="text"
                     placeholder="Search..."
                     value={searchTerm}
                     onChange={handleSearchChange}
-                    className="form-control w-50"
+                    className="form-control w-25"
                 />
                 {onAdd && (
                     <button onClick={onAdd} className="btn btn-foreground">
-                        Add New
+                        Add Data
                     </button>
                 )}
             </div>
@@ -191,30 +191,33 @@ export function TableUI({ fields, data, onAdd, onUpdate, onDelete, onView, loadi
                         ))}
                         {(onUpdate || onDelete || onView) && (
                             <td className="text-center">
-                                {onView && (
-                                    <button
-                                        onClick={() => onView(row)}
-                                        className="btn-outline-primary btn"
-                                    >
-                                        View
-                                    </button>
-                                )}
-                                {onUpdate && (
-                                    <button
-                                        onClick={() => onUpdate(row)}
-                                        className="btn btn-warning btn-sm me-2"
-                                    >
-                                        Update
-                                    </button>
-                                )}
-                                {onDelete && (
-                                    <button
-                                        onClick={() => onDelete(row)}
-                                        className="btn btn-danger btn-sm"
-                                    >
-                                        Delete
-                                    </button>
-                                )}
+                                <div className="d-flex flex-row gap-3 justify-content-center">
+                                    {onView && (
+                                        <button
+                                            onClick={() => onView(row)}
+                                            className="btn-outline-primary btn"
+                                        >
+                                            <span className={"bi bi-search"}></span> View
+                                        </button>
+                                    )}
+                                    {onUpdate && (
+                                        <button
+                                            onClick={() => onUpdate(row)}
+                                            className="btn btn-outline-warning"
+                                        >
+                                            <span className={"bi bi-pen"}></span> Update
+                                        </button>
+                                    )}
+                                    {onDelete && (
+                                        <button
+                                            onClick={() => onDelete(row)}
+                                            className="btn btn-outline-danger"
+                                        >
+                                            <span className={"bi bi-trash"}></span> Delete
+                                        </button>
+                                    )}
+                                </div>
+
                             </td>
                         )}
                     </tr>

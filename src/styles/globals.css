@@ -7,6 +7,7 @@
     --background: #FFFDD0;
     --foreground: #4F7942;
     --accent: #FFC000;
+    --red: #ff3e3e;
     --black: #4d4d4d;
     --gray: #666666;
     --white: #fdfce5;
@@ -193,7 +194,45 @@ blockquote span {
 }
 
 .btn-outline-primary:active {
-    background-color: #4F7942;
+    background-color: var(--foreground);
+    color: white;
+    opacity: 0.8;
+}
+
+.btn-outline-warning,
+.btn-outline-warning:visited,
+.btn-outline-warning:focus {
+    background-color: white;
+    color: var(--accent);
+    border: none;
+}
+
+.btn-outline-warning:hover {
+    background-color: var(--accent) !important;
+    color: white;
+}
+
+.btn-outline-warning:active {
+    background-color: var(--accent);
+    color: white;
+    opacity: 0.8;
+}
+
+.btn-outline-danger,
+.btn-outline-danger:visited,
+.btn-outline-danger:focus {
+    background-color: white;
+    color: var(--red);
+    border: none;
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--red) !important;
+    color: white;
+}
+
+.btn-outline-danger:active {
+    background-color: var(--red);
     color: white;
     opacity: 0.8;
 }

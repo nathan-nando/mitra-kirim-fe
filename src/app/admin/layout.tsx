@@ -11,8 +11,10 @@ export default function AdminLayout(
     return (
         <div className="d-flex flex-row">
             <NavbarAdmin/>
-            <div className={"admin-page"}>
-            {children}
+            <div className={"admin-page-wrapper"}>
+                <div className={"admin-page"}>
+                    {children}
+                </div>
             </div>
         </div>
     )

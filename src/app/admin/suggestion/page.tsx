@@ -7,6 +7,7 @@ import {TableUI} from "@/components/ui/table/Table";
 import {Modal} from "react-bootstrap";
 import {Detail} from "@/components/ui/detail/Detail";
 import {formatDate} from "@/utils/date";
+import {modalHeader} from "@/utils/modal";
 
 type TableRow = {
     [key: string]: string | number;
@@ -22,7 +23,7 @@ type SelectedData = {
     data?: DetailData
     message?: string
     reply?: string
-    hasReply?:number
+    hasReply?: number
 }
 
 export default function SuggestionAdm() {
@@ -42,10 +43,8 @@ export default function SuggestionAdm() {
     }, [])
 
     const [show, setShow] = useState(false);
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
     const handleView = (row: TableRow) => {
         setSelectedData({
             data: {
@@ -64,9 +63,8 @@ export default function SuggestionAdm() {
 
     const fields: string[] = ['name', 'email'];
 
-    return <div className={" p-4 suggestion d-flex flex-column gap-3"}>
+    return <div className={" p-3 suggestion d-flex flex-column gap-3"}>
         <h5 className={"fw-bold"}>Saran</h5>
-
         <TableUI
             loading={loading}
             fields={fields}
@@ -75,18 +73,20 @@ export default function SuggestionAdm() {
         />
         <Modal className={"modal-lg text-black-custom"} show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title className={"fw-bold"}>Lihat Data</Modal.Title>
+                <Modal.Title className={"fw-bold"}>{modalHeader("v")}</Modal.Title>
             </Modal.Header>
             <Modal.Body className={"col-12 d-flex flex-column gap-3"}>
                 <Detail data={selectedData.data}/>
-                <div >
+                <div>
                     <p className={"fw-bold ms-3"}>Message</p>
                     <textarea className={"form-control w-75 ms-4"} disabled={true}>{selectedData.message}</textarea>
                 </div>
 
                 <div className={"mb-5"}>
                     <p className={"fw-bold ms-3"}>Reply</p>
-                    <textarea rows={5} className={"form-control w-75 ms-4"} disabled={selectedData.hasReply == 1}>{selectedData.reply}</textarea>
+                    <textarea rows={5}
+                              className={"form-control w-75 ms-4"}
+                              disabled={selectedData.hasReply == 1}>{selectedData.reply}</textarea>
                 </div>
             </Modal.Body>
         </Modal>
