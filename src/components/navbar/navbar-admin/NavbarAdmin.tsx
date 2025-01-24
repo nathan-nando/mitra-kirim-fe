@@ -5,9 +5,21 @@ import Image from "next/image";
 import {useState} from "react";
 import Link from "next/link";
 import {NavbarAdminData, NavbarType} from "@/components/navbar/navbar-admin/NavbarAdminData";
+import {useRouter} from "next/navigation";
 
 export function NavbarAdmin() {
     const [collapseState, setCollapseState] = useState(false)
+    const router = useRouter();
+
+    const onLogout = () => {
+        console.log("LOG OUT")
+        clearCookie("X-AUTH")
+        router.push("/");
+    }
+
+    const clearCookie = (name: string) => {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    };
 
     const renderMenu = () => {
         return NavbarAdminData().map((v, i) => {
@@ -57,11 +69,10 @@ export function NavbarAdmin() {
         <div className={"sidebar-content"}>
             {renderMenu()}
         </div>
-        <div className="sidebar-footer mb-4">
-            <Link href={""} className={"sidebar-link"}>
-                <i className={"bi bi-door-open-fill"}></i>
-                <span>Logout</span>
-            </Link>
+        <div className="sidebar-footer text-center mb-4">
+            <button className={"btn btn-foreground "} onClick={onLogout}>
+                <i className={"bi bi-power"}></i>
+            </button>
         </div>
     </nav>
 }
