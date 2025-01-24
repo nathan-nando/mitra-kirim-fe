@@ -3,139 +3,66 @@
 import "./page.module.css"
 import React, {useEffect, useState} from "react";
 import {GetAllAPI} from "@/app/admin/suggestion/action";
+import {TableUI} from "@/components/ui/table/Table";
+import { Modal} from "react-bootstrap";
+import {Detail} from "@/components/ui/detail/Detail";
+import {formatDate} from "@/utils/date";
 
-type Suggestion = {
-    id: string
-    name: string
-    email: string
-    message: string
-    hasReplied: string
-}
+type TableRow = {
+    [key: string]: string | number;
+};
 
-type Pagination = {
-    currentPage: number
-    dataPerPage: number
-    totalData: number
-}
-
-type initialData = {
-    suggestions: Suggestion[],
-    pagination: Pagination,
-}
 
 export default function SuggestionAdm() {
-    const suggestions: Suggestion[] = [
-        // {
-        //     id: "a1",
-        //     name: "Alex sander",
-        //     email: "alex@gmail.com",
-        // },
-        // {
-        //     id: "t1",
-        //     name: "Tian",
-        //     email: "tian@gmail.com",
-        // },
-        // {
-        //     id: "t1",
-        //     name: "Tian",
-        //     email: "tian@gmail.com",
-        // }, {
-        //     id: "t1",
-        //     name: "Tian",
-        //     email: "tian@gmail.com",
-        // },
-        // {
-        //     id: "t1",
-        //     name: "Tian",
-        //     email: "tian@gmail.com",
-        // },
-        //
-        // {
-        //     id: "t2",
-        //     name: "Tian",
-        //     email: "tian@gmail.com",
-        // },
-        // {
-        //     id: "1",
-        //     name: "Tian",
-        //     email: "tian@gmail.com",
-        // },
-        // {
-        //     id: "1",
-        //     name: "Tian",
-        //     email: "tian@gmail.com",
-        // },
-        // {
-        //     id: "1",
-        //     name: "Tian",
-        //     email: "tian@gmail.com",
-        // },
-        // {
-        //     id: "1",
-        //     name: "Tian",
-        //     email: "tian@gmail.com",
-        // },
-        // {
-        //     id: "1",
-        //     name: "Tian",
-        //     email: "tian@gmail.com",
-        // },
-        // {
-        //     id: "1",
-        //     name: "Tian",
-        //     email: "tian@gmail.com",
-        // },
-    ]
-
+    const [dataList, setDataList] = useState([])
+    const [selectedData, setSelectedData] = useState({})
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
+        setLoading(true)
         GetAllAPI()
             .then((v => {
-                console.log(v)
+                setLoading(false)
+                setDataList(v)
             }))
+            .catch(()=>{
+                setLoading(false)
+            })
     }, [])
 
-    const initialData: initialData = {
-        suggestions,
-        pagination: {
-            totalData: 305,
-            dataPerPage: 10,
-            currentPage: 1
-        }
-    }
+    const [show, setShow] = useState(false);
 
-    const [state, setState] = useState(initialData)
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
+    const handleView = (row: TableRow) => {
+        setSelectedData({
+            name: row.name,
+            email: row.email,
+            message: row.message,
+            reply: row.reply,
+            createdDate: formatDate(String(row.createdDate))
+        })
+        handleShow()
+    };
 
-    const [dataFiltered, setDataFiltered] =
-        useState(
-            initialData.suggestions.slice(0, state.pagination.dataPerPage)
-        )
-
+    const fields: string[] = ['name', 'email'];
 
     return <div className={" p-4 suggestion d-flex flex-column gap-3"}>
         <h5 className={"fw-bold"}>Saran</h5>
 
-
-        <div className="modal modal-lg fade"
-             id="exampleModal"
-             tabIndex={-1}
-             aria-labelledby="modalLabel"
-             aria-hidden="true">
-            <div className="modal-dialog">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title" id="modalLabel">Balas Email</h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div className="modal-body">
-                        ...
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" className="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <TableUI
+            loading={loading}
+            fields={fields}
+            data={dataList}
+            onView={handleView}
+        />
+        <Modal className={"modal-lg"} show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title className={"fw-bold"}>Lihat Data</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className={"col-12"}>
+                <Detail data={selectedData}/>
+            </Modal.Body>
+        </Modal>
     </div>
 }
