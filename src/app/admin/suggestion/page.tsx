@@ -34,6 +34,7 @@ export default function SuggestionAdm() {
         setLoading(true)
         GetAllAPI()
             .then((v => {
+                console.log(v, "LIST")
                 setLoading(false)
                 setDataList(v)
             }))

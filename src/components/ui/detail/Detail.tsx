@@ -6,7 +6,7 @@ type KeyValuePair = {
 };
 
 type DetailProps = {
-    data: KeyValuePair;
+    data: any;
 };
 
 export const Detail = ({data}: DetailProps) => {
@@ -22,7 +22,7 @@ export const Detail = ({data}: DetailProps) => {
                     <span>:</span>
                     {/* Value */}
                     <span className="value" style={{flex: 1}}>
-            {value}
+            {String(value)}
           </span>
                 </div>
             ))}

@@ -1,6 +1,6 @@
 "use server"
 
-const api = 'http://localhost:9000/api/v1/location'
+const api = 'http://management-svc:9000/api/v1/location'
 
 export async function GetAllAPI() {
     try {

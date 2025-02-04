@@ -12,7 +12,6 @@ type TableRow = {
 
 type DetailData = {
     name: string
-    email: string
     createdDate: Date | string
 }
 
@@ -28,7 +27,7 @@ export default function TestimonialAdm(){
     const [selectedData, setSelectedData] = useState<SelectedData>({})
     const [loading, setLoading] = useState(false)
     //v view, a add, u update
-    const [modeModal, setModal] = useState("v")
+    const [modeModal, setModal] = useState<"a"| "u" | "v">("v")
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -38,10 +37,8 @@ export default function TestimonialAdm(){
         setSelectedData({
             data: {
                 name: String(row.nama),
-                deskripsi: String(row.deskripsi),
                 createdDate: formatDate(String(row.createdDate))
             },
-            iframeLink: row.iframeLink,
         },)
         handleShow()
     };

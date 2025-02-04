@@ -1,8 +1,10 @@
 "use server"
 
+const api = 'http://management-svc:9000/api/v1/suggestion'
+
 export async function GetAllAPI() {
     try {
-        const response = await fetch('http://localhost:9000/api/v1/suggestion',
+        const response = await fetch(api,
             {
                 method: 'GET',
             });

@@ -86,7 +86,7 @@ export function TableUI({ fields, data, onAdd, onUpdate, onDelete, onView, loadi
 
     // Generate pagination buttons with a static length of 5
     const renderPaginationButtons = () => {
-        const buttons = [];
+        const buttons:any[] = [];
         const maxButtons = 5; // Always show 5 page numbers
 
         // Calculate the range of pages to display
@@ -100,8 +100,7 @@ export function TableUI({ fields, data, onAdd, onUpdate, onDelete, onView, loadi
 
         // Generate buttons for the calculated range
         for (let i = startPage; i <= endPage; i++) {
-            buttons.push(
-                <li key={i} className={`page-item ${currentPage === i ? "active" : ""}`}>
+            buttons.push(<li key={i} className={`page-item ${currentPage === i ? "active" : ""}`}>
                     <button onClick={() => paginate(i)} className="page-link">
                         {i}
                     </button>

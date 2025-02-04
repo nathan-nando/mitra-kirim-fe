@@ -11,7 +11,7 @@ import {modalHeader} from "@/utils/modal";
 import {string} from "prop-types";
 
 type SelectedData = {
-    data?: never
+    data?: any
     iframeLink?: string
 }
 
@@ -20,7 +20,7 @@ export default function LocationAdm() {
     const [selectedData, setSelectedData] = useState<SelectedData>({})
     const [loading, setLoading] = useState(false)
     //v view, a add, u update
-    const [modeModal, setModal] = useState("v")
+    const [modeModal, setModal] = useState<"a" | "u" | "v">("v")
 
     useEffect(() => {
         setLoading(true)
@@ -130,7 +130,7 @@ export default function LocationAdm() {
                 <Modal.Title className={"fw-bold"}>{modalHeader(modeModal)}</Modal.Title>
             </Modal.Header>
             <Modal.Body className={"col-12 d-flex flex-column gap-3"}>
-                {modeModal === "v" ? renderOnView(selectedData.iframeLink) : ""}
+                {modeModal === "v" ? renderOnView(selectedData.iframeLink!) : ""}
                 {modeModal === "a" || modeModal === "u" ? renderForm() : ""}
             </Modal.Body>
         </Modal>

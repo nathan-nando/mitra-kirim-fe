@@ -1,5 +1,6 @@
 "use server"
 
+const api = 'http://management-svc:9000/api/v1/suggestion'
 
 export const addSuggestion = async (formData: FormData) => {
     try {
@@ -12,7 +13,7 @@ export const addSuggestion = async (formData: FormData) => {
         const body = {name: name, email: email, message: message}
         const jsonBody = JSON.stringify(body)
         console.log(jsonBody)
-        await fetch("http://localhost:9000/api/v1/suggestion", {
+        await fetch(api, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: jsonBody

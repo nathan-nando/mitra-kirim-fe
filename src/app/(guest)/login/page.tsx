@@ -30,7 +30,6 @@ export default function Page() {
                     toast.success("Sukses Login")
 
                 router.push("/admin")
-                setLoading(false)
             }}
             className={"login-form d-flex flex-column gap-4 shadow-sm"}>
             <h5 className={"text-black-custom"}>Selamat datang </h5>
@@ -46,7 +45,7 @@ export default function Page() {
             </div>
             <div className="input-group mb-3 mb-5">
                 <span className="input-group-text bi bi-key" id="basic-addon1"></span>
-                <input type="text"
+                <input type="password"
                        name={"password"}
                        className="form-control"
                        placeholder="Password"
