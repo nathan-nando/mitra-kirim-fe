@@ -1,14 +1,15 @@
 "use server"
 
-const api = 'http://management-svc:9000/api/v1/location'
+import {apiLocation, getApi} from "@/api/api";
 
 export async function GetAllAPI() {
     try {
-        const response = await fetch(api,
+        console.log(getApi(apiLocation))
+        const response = await fetch(getApi(apiLocation),
             {
                 method: 'GET',
             });
-        const {data} =  await response.json();
+        const {data} = await response.json();
         return data
     } catch (error) {
         console.error(error);

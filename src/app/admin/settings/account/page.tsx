@@ -1,3 +1,7 @@
+import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
+
 export default function AccountAdm(){
-    return <h5>Account</h5>
+    return <>
+        <Breadcrumb items={["Settings", "Account"]}/>
+    </>
 }

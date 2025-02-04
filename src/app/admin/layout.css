@@ -1,12 +1,15 @@
 .admin-page{
     /*margin: 2vw;*/
-    padding: 2vw;
+    padding: 2.5vw;
     border-radius: 10px;
     background-color: white;
     height: 100vh;
     width: 100%;
     overflow-y: scroll;
     overflow-x: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 2vw;
 }
 
 .admin-page-wrapper{

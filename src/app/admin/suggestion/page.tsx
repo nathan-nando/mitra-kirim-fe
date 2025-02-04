@@ -8,6 +8,7 @@ import {Modal} from "react-bootstrap";
 import {Detail} from "@/components/ui/detail/Detail";
 import {formatDate} from "@/utils/date";
 import {modalHeader} from "@/utils/modal";
+import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
 
 type TableRow = {
     [key: string]: string | number;
@@ -64,8 +65,8 @@ export default function SuggestionAdm() {
 
     const fields: string[] = ['name', 'email'];
 
-    return <div className={" p-3 suggestion d-flex flex-column gap-3"}>
-        <h5 className={"fw-bold"}>Saran</h5>
+    return <>
+        <Breadcrumb items={["Saran"]}/>
         <TableUI
             loading={loading}
             fields={fields}
@@ -91,5 +92,5 @@ export default function SuggestionAdm() {
                 </div>
             </Modal.Body>
         </Modal>
-    </div>
+    </>
 }

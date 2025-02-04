@@ -57,11 +57,6 @@ export function Testimonial() {
         <div className={"testimonial-wrapper "}>
             {card()}
         </div>
-        <div className={"mx-auto"}>
-            <Link href={"/testimonial"}>
-                <button type="button" className="btn btn-light btn-foreground mt-4 mt-lg-5 ">Lihat selengkapnya</button>
-            </Link>
-        </div>
     </div>
 }
 

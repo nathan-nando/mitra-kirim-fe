@@ -9,6 +9,7 @@ import {Modal} from "react-bootstrap";
 import {Detail} from "@/components/ui/detail/Detail";
 import {modalHeader} from "@/utils/modal";
 import {string} from "prop-types";
+import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
 
 type SelectedData = {
     data?: any
@@ -43,6 +44,8 @@ export default function LocationAdm() {
             data: {
                 name: String(row.nama),
                 deskripsi: String(row.deskripsi),
+                email: String(row.email),
+                whatsapp: String(row.whatsapp),
                 createdDate: formatDate(String(row.createdDate))
             },
             iframeLink: row.iframeLink,
@@ -112,10 +115,10 @@ export default function LocationAdm() {
         </>
     }
 
-    const fields: string[] = ['nama', 'deskripsi'];
+    const fields: string[] = ['nama', 'deskripsi', 'email', 'whatsapp'];
 
-    return <div className={"p-3 d-flex flex-column gap-3"}>
-        <h5 className={"fw-bold"}>Location</h5>
+    return <>
+        <Breadcrumb items={["Location"]}/>
         <TableUI
             loading={loading}
             fields={fields}
@@ -135,5 +138,5 @@ export default function LocationAdm() {
             </Modal.Body>
         </Modal>
 
-    </div>
+    </>
 }

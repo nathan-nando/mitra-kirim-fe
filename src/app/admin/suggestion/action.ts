@@ -1,10 +1,11 @@
 "use server"
 
-const api = 'http://management-svc:9000/api/v1/suggestion'
+
+import {apiSuggestion, getApi} from "@/api/api";
 
 export async function GetAllAPI() {
     try {
-        const response = await fetch(api,
+        const response = await fetch(getApi(apiSuggestion),
             {
                 method: 'GET',
             });

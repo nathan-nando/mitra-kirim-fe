@@ -134,7 +134,7 @@ export function TableUI({ fields, data, onAdd, onUpdate, onDelete, onView, loadi
             <table className="table">
                 <thead>
                 <tr>
-                    <th className="text-center" key="no">
+                    <th className="text-center col-1" key="no" >
                         <span>No</span>
                         <button
                             onClick={() => handleSort("no")}
@@ -196,7 +196,7 @@ export function TableUI({ fields, data, onAdd, onUpdate, onDelete, onView, loadi
                                             onClick={() => onView(row)}
                                             className="btn-outline-primary btn"
                                         >
-                                            <span className={"bi bi-search"}></span> View
+                                            <span className={"bi bi-search"}></span>
                                         </button>
                                     )}
                                     {onUpdate && (
@@ -204,7 +204,7 @@ export function TableUI({ fields, data, onAdd, onUpdate, onDelete, onView, loadi
                                             onClick={() => onUpdate(row)}
                                             className="btn btn-outline-warning"
                                         >
-                                            <span className={"bi bi-pen"}></span> Update
+                                            <span className={"bi bi-pen"}></span>
                                         </button>
                                     )}
                                     {onDelete && (
@@ -212,7 +212,7 @@ export function TableUI({ fields, data, onAdd, onUpdate, onDelete, onView, loadi
                                             onClick={() => onDelete(row)}
                                             className="btn btn-outline-danger"
                                         >
-                                            <span className={"bi bi-trash"}></span> Delete
+                                            <span className={"bi bi-trash"}></span>
                                         </button>
                                     )}
                                 </div>

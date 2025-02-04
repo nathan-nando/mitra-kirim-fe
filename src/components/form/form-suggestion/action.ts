@@ -1,6 +1,7 @@
 "use server"
 
-const api = 'http://management-svc:9000/api/v1/suggestion'
+import {apiSuggestion, getApi} from "@/api/api";
+
 
 export const addSuggestion = async (formData: FormData) => {
     try {
@@ -13,7 +14,7 @@ export const addSuggestion = async (formData: FormData) => {
         const body = {name: name, email: email, message: message}
         const jsonBody = JSON.stringify(body)
         console.log(jsonBody)
-        await fetch(api, {
+        await fetch(getApi(apiSuggestion), {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: jsonBody

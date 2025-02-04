@@ -161,6 +161,27 @@ blockquote span {
     margin-top: 1em;
 }
 
+label{
+    font-size: .9vw;
+}
+
+table {
+    font-size: 5px !important;
+}
+
+th {
+    font-size: .9vw !important;
+}
+
+td, td button{
+    font-size: .9vw !important;
+}
+
+button{
+    font-size: .9vw!important;
+}
+
+
 
 .btn-primary,
 .btn-primary:hover,

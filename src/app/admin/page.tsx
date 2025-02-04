@@ -1,6 +1,7 @@
 import {VisitorChart} from "@/components/ui/chart/VisitorChart";
 import "./layout.css"
 import {DashboardCard} from "@/components/ui/card/DashboardCard";
+import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
 
 export default function Admin() {
     const monthlyLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
@@ -9,8 +10,8 @@ export default function Admin() {
     const yearlyLabels = ["2020", "2021", "2022", "2023"];
     const yearlyData = [500, 700, 900, 1200];
 
-    return <div className={"p-3 d-flex flex-column gap-5 mb-5"}>
-        <h5 className={"fw-bold"}>Dashboard</h5>
+    return <>
+        <Breadcrumb items={["Dashboard"]}/>
         <div className="d-flex flex-row gap-5 ">
             <DashboardCard number={20} label={"Pengunjung Hari Ini"}/>
             <DashboardCard number={2} label={"Total Saran"}/>
@@ -33,6 +34,5 @@ export default function Admin() {
                 </div>
             </div>
         </div>
-
-    </div>
+    </>
 }

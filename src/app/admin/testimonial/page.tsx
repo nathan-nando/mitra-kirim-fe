@@ -5,6 +5,7 @@ import {TableUI} from "@/components/ui/table/Table";
 import {Modal} from "react-bootstrap";
 import {modalHeader} from "@/utils/modal";
 import {useState} from "react";
+import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
 
 type TableRow = {
     [key: string]: string | number;
@@ -22,12 +23,12 @@ type SelectedData = {
     hasReply?: number
 }
 
-export default function TestimonialAdm(){
+export default function TestimonialAdm() {
     const [dataList, setDataList] = useState([])
     const [selectedData, setSelectedData] = useState<SelectedData>({})
     const [loading, setLoading] = useState(false)
     //v view, a add, u update
-    const [modeModal, setModal] = useState<"a"| "u" | "v">("v")
+    const [modeModal, setModal] = useState<"a" | "u" | "v">("v")
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -107,8 +108,8 @@ export default function TestimonialAdm(){
 
     const fields: string[] = ['nama', 'deskripsi'];
 
-    return <div className={"p-3 d-flex flex-column gap-3"}>
-        <h5 className={"fw-bold"}>Testimoni</h5>
+    return <>
+        <Breadcrumb items={["Testimoni"]}/>
         <TableUI
             loading={loading}
             fields={fields}
@@ -126,6 +127,5 @@ export default function TestimonialAdm(){
                 <Detail data={selectedData.data}/>
             </Modal.Body>
         </Modal>
-
-    </div>
+    </>
 }

@@ -2,9 +2,7 @@
 
 import "./login.css"
 import {toast, Toaster} from "sonner";
-import {addSuggestion} from "@/components/form/form-suggestion/action";
 import {useRouter} from "next/navigation";
-import {useState} from "react";
 import Button from "@/components/ui/button/Button";
 
 export default function Page() {
@@ -15,7 +13,6 @@ export default function Page() {
             action={async (formData: FormData) => {
                 let isValid: boolean = true
                 formData.forEach((_, key) => {
-                    console.log(key)
                     if (!formData.get(key)) {
                         isValid = false
                     }
@@ -25,9 +22,8 @@ export default function Page() {
                     return
                 }
 
-                const err = await addSuggestion(formData)
-                if (!err)
-                    toast.success("Sukses Login")
+                // if (!err)
+                toast.success("Sukses Login")
 
                 router.push("/admin")
             }}

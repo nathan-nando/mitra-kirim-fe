@@ -5,23 +5,6 @@ export const NavbarAdminData = (): NavbarType[] => {
             link: "",
             icon: "bi bi-house-fill"
         },
-        // {
-        //     title: "Layout",
-        //     link: "#",
-        //     icon: "bi bi-layers-fill",
-        //     children: [
-        //         {
-        //             title: "Hero",
-        //             link: "layout/hero",
-        //             icon: "bi bi-layers-fill",
-        //         },
-        //         {
-        //             title: "Services",
-        //             link: "layout/services",
-        //             icon: "bi bi-layers-fill",
-        //         }
-        //     ]
-        // },
         {
             title: "Suggestion",
             link: "suggestion",
@@ -45,12 +28,17 @@ export const NavbarAdminData = (): NavbarType[] => {
                 {
                     title: "General",
                     link: "settings/general",
-                    icon: "bi bi-map-fills"
+                    icon: "bi bi-building-fill"
+                },
+                {
+                    title: "Layout",
+                    link: "settings/layout",
+                    icon: "bi bi-layers-fill"
                 },
                 {
                     title: "Account",
                     link: "settings/account",
-                    icon: "bi bi-map-fills"
+                    icon: "bi bi-person-fill-gear"
                 },
             ]
         }
