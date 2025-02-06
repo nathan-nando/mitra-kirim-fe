@@ -181,6 +181,10 @@ button{
     font-size: .9vw!important;
 }
 
+input ,textarea
+{
+    font-size:.9vw!important;
+}
 
 
 .btn-primary,

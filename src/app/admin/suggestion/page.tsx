@@ -10,10 +10,6 @@ import {formatDate} from "@/utils/date";
 import {modalHeader} from "@/utils/modal";
 import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
 
-type TableRow = {
-    [key: string]: string | number;
-};
-
 type DetailData = {
     name: string
     email: string
@@ -47,7 +43,7 @@ export default function SuggestionAdm() {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const handleView = (row: TableRow) => {
+    const handleView = (row) => {
         setSelectedData({
             data: {
                 name: String(row.name),

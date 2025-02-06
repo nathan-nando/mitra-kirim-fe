@@ -1,6 +1,5 @@
 import "./testimonial.css"
 import Image from "next/image";
-import Link from "next/link";
 import {Line} from "@/components/ui/line/Line";
 
 export function Testimonial() {

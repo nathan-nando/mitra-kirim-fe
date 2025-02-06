@@ -1,9 +1,9 @@
 "use client"
 
 import "./form-suggestion.css"
-import {addSuggestion} from "@/components/form/form-suggestion/action";
 import Button from "@/components/ui/button/Button";
 import {toast, Toaster} from "sonner";
+import {addSuggestion} from "@/app/(guest)/action";
 
 export function FormSuggestion() {
     const header = "Kritik dan Saran"
