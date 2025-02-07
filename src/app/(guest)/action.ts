@@ -5,8 +5,6 @@ import {apiSuggestion, getApi} from "@/api/api";
 
 export const addSuggestion = async (formData: FormData) => {
     try {
-        // const endpoint = `${process.env.NEXT_PUBLIC_BE_URL}/api/v1/suggestion`
-        // const endpoint = "localhost:9000/api/v1/suggestion"
         const name = formData.get("name")
         const email = formData.get("email")
         const message = formData.get("message")

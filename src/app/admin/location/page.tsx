@@ -8,11 +8,10 @@ import {TableUI} from "@/components/ui/table/Table";
 import {Modal} from "react-bootstrap";
 import {Detail} from "@/components/ui/detail/Detail";
 import {modalHeader} from "@/utils/modal";
-import {string} from "prop-types";
 import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
 
 type SelectedData = {
-    data?: any
+    data?: unknown
     iframeLink?: string
 }
 
@@ -107,15 +106,9 @@ export default function LocationAdm() {
             </form>
         </>
     }
-    const renderOnUpdate = () => {
-        return <>
-            <form>
-                <input type="text" className={"form-control"}/>
-            </form>
-        </>
-    }
 
-    const fields: string[] = ['nama', 'deskripsi', 'email', 'whatsapp'];
+
+    const fields: string[] = ['nama', 'email', 'whatsapp', 'alamat', 'deskripsi'];
 
     return <>
         <Breadcrumb items={["Location"]}/>
