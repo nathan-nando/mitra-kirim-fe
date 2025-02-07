@@ -1,14 +1,15 @@
 "use client"
 
 import "./login.css"
-import {toast, Toaster} from "sonner";
+import {toast} from "sonner";
 import {useRouter} from "next/navigation";
 import Button from "@/components/ui/button/Button";
+import {loginAPI} from "@/app/(guest)/login/action";
+import Link from "next/link";
 
 export default function Page() {
     const router = useRouter()
     return <div className={"login-wrapper"}>
-        <Toaster richColors={true}/>
         <form
             action={async (formData: FormData) => {
                 let isValid: boolean = true
@@ -21,11 +22,17 @@ export default function Page() {
                     toast.error("Isi semua form")
                     return
                 }
-
-                // if (!err)
-                toast.success("Sukses Login")
-
-                router.push("/admin")
+                toast.loading("Loading...")
+                loginAPI(formData)
+                    .then(() => {
+                        toast.dismiss()
+                        toast.success("Sukses Login")
+                        router.push("/admin")
+                    })
+                    .catch(() => {
+                        toast.dismiss()
+                        toast.error("Username / password salah")
+                    })
             }}
             className={"login-form d-flex flex-column gap-4 shadow-sm"}>
             <h5 className={"text-black-custom"}>Selamat datang </h5>
@@ -48,7 +55,10 @@ export default function Page() {
                        aria-label="Username"
                        aria-describedby="basic-addon1"/>
             </div>
-            <Button name={"Login"}/>
+            <div className="col-12 text-center">
+                <Button name={"Login"} type={"submit"} className={"btn-foreground col-8"}/>
+            </div>
+            <Link href={"/"} className={"text-center"}><small >Kembali</small></Link>
         </form>
     </div>
 }

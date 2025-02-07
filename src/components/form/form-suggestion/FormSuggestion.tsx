@@ -2,14 +2,13 @@
 
 import "./form-suggestion.css"
 import Button from "@/components/ui/button/Button";
-import {toast, Toaster} from "sonner";
+import {toast} from "sonner";
 import {addSuggestion} from "@/app/(guest)/action";
 
 export function FormSuggestion() {
     const header = "Kritik dan Saran"
 
     return <div className={"form-suggestion d-flex flex-column gap-2 align-items-center text-black-custom "}>
-        <Toaster richColors={true}/>
         <h4>{header}</h4>
         <form
             action={async (formData: FormData) => {
@@ -53,12 +52,12 @@ export function FormSuggestion() {
             </div>
             <div className="">
                 <label htmlFor="nameInput">Message</label>
-                    <textarea
-                        className="form-control"
-                        id="textareaMessage"
-                        rows={7}
-                        name="message"
-                    >
+                <textarea
+                    className="form-control"
+                    id="textareaMessage"
+                    rows={7}
+                    name="message"
+                >
                     </textarea>
             </div>
             <Button/>

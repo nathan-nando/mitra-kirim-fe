@@ -1,19 +1,22 @@
 "use server"
 
-import {apiConfiguration, getApi} from "@/api/api";
+import {apiConfiguration} from "@/api/api";
 import {httpRequest} from "@/utils/httpRequest";
 
 
 export async function GetByTypeAPI(types: string[]) {
     try {
-        const response = await fetch(getApi(apiConfiguration + "/type"),
-            {
-                method: 'POST',
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(types),
-            });
-        const {data} = await response.json();
-        return data
+        const response = await httpRequest(apiConfiguration + "/type", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(types)
+        })
+        if (response?.status >= 400) {
+            console.log(response)
+            const errMessage = await response?.json()
+            throw new Error(errMessage.message || "Action: Failed Request")
+        }
+        return response
     } catch (error) {
         throw error
     }

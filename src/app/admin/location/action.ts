@@ -1,16 +1,18 @@
 "use server"
 
-import {apiLocation, getApi} from "@/api/api";
+import {apiLocation} from "@/api/api";
+import {httpRequest} from "@/utils/httpRequest";
 
 export async function GetAllAPI() {
     try {
-        console.log(getApi(apiLocation))
-        const response = await fetch(getApi(apiLocation),
-            {
-                method: 'GET',
-            });
-        const {data} = await response.json();
-        return data
+        const response = await httpRequest(apiLocation, {
+            method: "GET",
+        })
+        if (response?.status >= 400) {
+            const errMessage = await response?.json()
+            throw new Error(errMessage.message || "Action: Failed Request")
+        }
+        return response
     } catch (error) {
         console.error(error);
         throw error

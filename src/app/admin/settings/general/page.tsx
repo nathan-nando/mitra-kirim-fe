@@ -13,7 +13,7 @@ import {
     updateTokoAPI
 } from "@/app/admin/settings/general/action";
 import ButtonIcon from "@/components/ui/button/ButtonIcon";
-import {toast, Toaster} from "sonner";
+import {toast} from "sonner";
 import Image from "next/image";
 
 
@@ -29,7 +29,7 @@ export default function GeneralAdm() {
     const [isEditingTokoForm, setIsEditingTokoForm] = useState<boolean>(false)
 
     const autoFillForm = useCallback(() => {
-        dataList.forEach(config => {
+        dataList?.map(config => {
             const elements = document.getElementsByName(config.key!);
 
             if (elements.length > 0) {
@@ -195,7 +195,6 @@ export default function GeneralAdm() {
 
     return <>
         <Breadcrumb items={["Settings", "General"]}/>
-        <Toaster richColors={true}/>
         {loading && <HorizontalLineLoading/>}
         <div className={"d-flex flex-column gap-5"}>
             <div className="row">

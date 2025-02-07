@@ -1,12 +1,18 @@
 import {useFormStatus} from "react-dom";
 
-export default function Button({name= "Submit"}) {
+export interface ButtonProps {
+    name?:string
+    className?:string
+    type?:"button" | "submit" | "reset"
+}
+
+export default function Button({name = "Save", type = "button", className="btn-foreground"}:ButtonProps) {
     const {pending} = useFormStatus()
 
     return <button
         disabled={pending}
-        type={"submit"}
-        className={"btn btn-foreground"}>
+        type={type}
+        className={`btn ${className}`}>
         {pending ? `${name}...` : name}
     </button>
 }

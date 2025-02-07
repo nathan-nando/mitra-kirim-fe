@@ -1,6 +1,7 @@
 import {urlBE} from "@/utils/env";
 
 export const apiSuggestion =  "/suggestion"
+export const apiAuth =  "/auth"
 export const apiLocation =  "/location"
 export const apiConfiguration =  "/configuration"
 export const apiTestimonial =  "/testimonial"

@@ -5,21 +5,24 @@ import Image from "next/image";
 import {useState} from "react";
 import Link from "next/link";
 import {NavbarAdminData, NavbarType} from "@/components/navbar/navbar-admin/NavbarAdminData";
-import {useRouter} from "next/navigation";
+import {logout} from "@/app/(guest)/login/action";
+import {toast} from "sonner";
 
 export function NavbarAdmin() {
     const [collapseState, setCollapseState] = useState(false)
-    const router = useRouter();
 
     const onLogout = () => {
-        console.log("LOG OUT")
-        clearCookie("X-AUTH")
-        router.push("/");
+        toast.loading("Loading...")
+        logout()
+            .then(() => {
+                toast.dismiss()
+                toast.success("Berhasil Logout")
+            })
+            .catch(() => {
+                toast.success("Berhasil Logout")
+                toast.dismiss()
+            })
     }
-
-    const clearCookie = (name: string) => {
-        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    };
 
     const renderMenu = () => {
         return NavbarAdminData().map((v, i) => {

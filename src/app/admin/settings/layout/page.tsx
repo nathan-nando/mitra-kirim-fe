@@ -48,90 +48,15 @@ export default function LayoutAdm() {
 
     return (
         <>
-            <style jsx>{`
-                body {
-                    margin: 0;
-                    padding: 0;
-                    font-family: Arial, sans-serif;
-                }
-
-                .form-container {
-                    padding: 2rem;
-                    margin: 2rem;
-                    width: auto;
-                }
-
-                h2 {
-                    font-size: 1.5rem;
-                    margin-bottom: 1rem;
-                    color: #333;
-                    text-align: left;
-                }
-
-                .formGroup {
-                    margin-bottom: 1.5rem;
-                }
-
-                .label {
-                    display: block;
-                    margin-bottom: 0.5rem;
-                    font-weight: bold;
-                    text-align: left;
-                }
-
-                .input, .fileInput, .textarea {
-                    width: 100%;
-                    padding: 0.75rem;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    box-sizing: border-box;
-                }
-
-                .textarea {
-                    resize: vertical;
-                }
-
-                .input:focus, .fileInput:focus, .textarea:focus {
-                    border-color: #0070f3;
-                    outline: none;
-                }
-
-                .imagePreview {
-                    margin-top: 0.5rem;
-                    width: 100%;
-                    height: auto;
-                    max-height: 400px;
-                    object-fit: cover;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                }
-
-                .submitButton {
-                    margin-top: 1.5rem;
-                    padding: 0.75rem 1.5rem;
-                    background-color: #4F7942; /* Warna hijau yang diinginkan */
-                    color: #fff;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-size: 1rem;
-                    font-weight: bold;
-                }
-
-                .submitButton:hover {
-                    background-color: #3B6A3D; /* Warna hijau gelap saat dihover */
-                }
-            `}</style>
-
             <Breadcrumb items={["Settings", "Layout"]} />
             <div className="form-container">
-                <form onSubmit={handleSubmit}>
+                <form>
                     <h2>Hero Settings</h2>
                     <div className="formGroup">
                         <label className="label">Deskripsi :</label>
                         <textarea
-                            className="textarea"
-                            rows="5"
+                            className="form-control"
+                            rows={5}
                             value={heroDescription}
                             onChange={handleHeroDescriptionChange}
                         />
@@ -139,7 +64,7 @@ export default function LayoutAdm() {
                         <input
                             type="file"
                             accept="image/*"
-                            className="fileInput"
+                            className="form-control"
                             onChange={handleHeroImageChange}
                         />
                         {heroImageUrl && (
@@ -153,14 +78,14 @@ export default function LayoutAdm() {
                             <label className="label">Judul Layanan {index + 1} :</label>
                             <input
                                 type="text"
-                                className="input"
+                                className="form-control"
                                 value={service.title}
                                 onChange={handleServiceChange(index, "title")}
                             />
                             <label className="label">Deskripsi Layanan {index + 1} :</label>
                             <textarea
                                 className="textarea"
-                                rows="3"
+                                rows={3}
                                 value={service.description}
                                 onChange={handleServiceChange(index, "description")}
                             />

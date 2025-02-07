@@ -3,6 +3,7 @@ import {Geist, Geist_Mono} from "next/font/google";
 import "@/styles/globals.css";
 import React from "react";
 import LoadBootstrap from "@/components/ui/LoadBootstrap";
+import {Toaster} from "sonner";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -29,6 +30,7 @@ export default function RootLayout(
         <html lang="en">
         <LoadBootstrap/>
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <Toaster richColors/>
         {children}
         </body>
         </html>
