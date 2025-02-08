@@ -15,6 +15,7 @@ import {
 import ButtonIcon from "@/components/ui/button/ButtonIcon";
 import {toast} from "sonner";
 import Image from "next/image";
+import {getTestimonialAPI} from "@/app/admin/testimonial/action";
 
 
 export default function GeneralAdm() {
@@ -61,8 +62,9 @@ export default function GeneralAdm() {
     }
 
     useEffect(() => {
-        getAPI()
+
     }, [])
+
 
 
     useEffect(() => {
@@ -266,7 +268,7 @@ export default function GeneralAdm() {
 
                         <div className={`col d-flex flex-column gap-2 ${!isEditingLogo && 'visually-hidden'}`}>
                             <label>Logo</label>
-                            <input name={"appLogo"} type="file" className={"form-control"}/>
+                            <input name={"appLogo"} accept="image/*" type="file" className={"form-control"}/>
                         </div>
                     </div>
                 </form>

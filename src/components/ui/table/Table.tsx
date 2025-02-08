@@ -1,10 +1,10 @@
-import {JSX, useState} from "react";
+import { JSX, useState } from "react";
 import "./table.css";
 import { capitalizeWords } from "@/utils/capitilize";
 import HorizontalLineLoading from "@/components/ui/loading/Horizontal";
 
 type TableRow = {
-    [key: string]: string | number | null | undefined;
+    [key: string]: string | number | boolean | null | undefined;
 };
 
 type SortConfig = {
@@ -19,6 +19,7 @@ type TableProps = {
     onUpdate?: ((row: TableRow) => void) | null;
     onDelete?: ((row: TableRow) => void) | null;
     onView?: ((row: TableRow) => void) | null;
+    onSwitchChange?: ((row: TableRow, newValue: boolean) => void) | null;
     loading: boolean;
 };
 
@@ -29,6 +30,7 @@ export function TableUI({
                             onUpdate = null,
                             onDelete = null,
                             onView = null,
+                            onSwitchChange = null,
                             loading = false
                         }: TableProps) {
     const [currentPage, setCurrentPage] = useState(1);
@@ -52,7 +54,7 @@ export function TableUI({
     // Sort data with null safety
     const sortedData = [...filteredData].sort((a, b) => {
         if (sortConfig !== null) {
-            const { key, direction } = sortConfig;
+            const {key, direction} = sortConfig;
 
             // Special case for sorting by "No" (index)
             if (key === "no") {
@@ -111,7 +113,15 @@ export function TableUI({
         if (sortConfig?.key === key && sortConfig.direction === "asc") {
             direction = "desc";
         }
-        setSortConfig({ key, direction });
+        setSortConfig({key, direction});
+    };
+
+    // Handle switch change
+    const handleSwitchChange = (row: TableRow, field: string) => {
+        const newValue = !row[field];
+        if (onSwitchChange) {
+            onSwitchChange(row, newValue);
+        }
     };
 
     // Generate pagination buttons with null safety
@@ -144,14 +154,14 @@ export function TableUI({
     };
 
     // Safe rendering of cell content
-    const renderCellContent = (value: string | number | null | undefined): string => {
+    const renderCellContent = (value: string | number | boolean | null | undefined): string => {
         if (value == null) return "";
         return String(value);
     };
 
     return (
         <>
-            {loading && <HorizontalLineLoading />}
+            {loading && <HorizontalLineLoading/>}
 
             {/* Search Input and Add Button */}
             <div className="mt-4 d-flex justify-content-between mb-3 col-12">
@@ -219,7 +229,7 @@ export function TableUI({
                             </div>
                         </th>
                     ))}
-                    {(onUpdate || onDelete || onView) && (
+                    {(onUpdate || onDelete || onView || onSwitchChange) && (
                         <th className="text-center">Actions</th>
                     )}
                 </tr>
@@ -230,11 +240,30 @@ export function TableUI({
                         <td className="text-center">
                             {sortedData.indexOf(row) + 1}
                         </td>
-                        {fields.map((field, colIndex) => (
-                            <td key={field + colIndex}>
-                                {renderCellContent(row[field])}
-                            </td>
-                        ))}
+                        {fields.map((field, colIndex) => {
+                            if (field === "slide") {
+                                return (
+                                    <td key={field + colIndex} className="text-center">
+                                        <div className="form-check form-switch d-flex justify-content-center">
+                                            <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                role="switch"
+                                                checked={!!row[field]}
+                                                style={{ cursor: 'pointer' }}
+                                                onChange={() => handleSwitchChange(row, field)}
+                                            />
+                                        </div>
+                                    </td>
+                                );
+                            } else {
+                                return (
+                                    <td key={field + colIndex}>
+                                        {renderCellContent(row[field])}
+                                    </td>
+                                );
+                            }
+                        })}
                         {(onUpdate || onDelete || onView) && (
                             <td className="text-center">
                                 <div className="d-flex flex-row gap-3 justify-content-center">
@@ -244,7 +273,7 @@ export function TableUI({
                                             className="btn btn-outline-primary"
                                             type="button"
                                         >
-                                            <span className="bi bi-search" />
+                                            <span className="bi bi-search"/>
                                         </button>
                                     )}
                                     {onUpdate && (
@@ -253,7 +282,7 @@ export function TableUI({
                                             className="btn btn-outline-warning"
                                             type="button"
                                         >
-                                            <span className="bi bi-pen" />
+                                            <span className="bi bi-pen"/>
                                         </button>
                                     )}
                                     {onDelete && (
@@ -262,7 +291,7 @@ export function TableUI({
                                             className="btn btn-outline-danger"
                                             type="button"
                                         >
-                                            <span className="bi bi-trash" />
+                                            <span className="bi bi-trash"/>
                                         </button>
                                     )}
                                 </div>

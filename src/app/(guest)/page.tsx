@@ -34,16 +34,24 @@ export default async function Home() {
     const data: IData = await getConfigurationAPI()
     const {config, location} = data
 
-    let heroImg, heroDesc, whatsappNumber = ""
+    let heroImg, heroDesc, whatsappNumber, appName, appDescription , appLogo = ""
     const serviceData: unknown[] = []
     const socialData: unknown[] = []
     const tokoData: unknown[] = []
 
 
     config?.map(({key, type, value}) => {
-        if (key === "heroImg") {
+        if (key === "appName") {
+            appName = value
+        } else if (key === "appDescription") {
+            appDescription = value
+        } else if (key === "appLogo") {
+            appLogo = value
+        }
+        else if (key === "heroImg") {
             heroImg = value
-        } else if (key === "heroDesc") {
+        }
+        else if (key === "heroDesc") {
             heroDesc = value
         } else if (key === "services") {
             const parsed: unknown[] = JSON.parse(value)

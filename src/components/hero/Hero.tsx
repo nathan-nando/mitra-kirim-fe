@@ -1,17 +1,15 @@
 import Image from "next/image";
 import "./hero.css"
+import {withParagraphs} from "@/utils/helpers";
 
 export function Hero({img, description}) {
+    console.log("DESCRIPTION", description)
     const getTitle = () => {
         const result: string = "Menjamin Pasokan Hotel Restoran dan \nKafe dengan Bahan Berkualitas"
         return result
     }
 
-    const getDescription = () => {
-        const result: string = "PT Mitra Kirim Horeca adalah perusahaan yang menyediakan berbagai kebutuhan untuk hotel, restoran, dan kafe. Kami menawarkan produk berkualitas tinggi, mulai dari peralatan dapur, perlengkapan meja, hingga bahan makanan dan minuman, yang dirancang untuk mendukung operasional bisnis hospitality Anda. " +
-            "\n\nDengan pelayanan yang cepat dan profesional, PT Mitra Kirim Horeca menjadi mitra terpercaya dalam memenuhi kebutuhan sektor horeca (hotel, restoran, dan kafe) dengan harga kompetitif dan kualitas terbaik."
-        return result
-    }
+    const paragraphs = withParagraphs(description)
 
 
     const getImg = () => `/images/hero.jpg`
@@ -32,9 +30,15 @@ export function Hero({img, description}) {
                       />
             </div>
             <div className={"col ms-5 me-5 mt-3"}>
-                <p className={"hero-description paragraph-justify"} style={{whiteSpace: "pre-wrap"}}>
-                    {getDescription()}
-                </p>
+
+                <div className={"hero-description paragraph-justify"} style={{whiteSpace: "pre-wrap"}}
+                >
+                    <div>
+                        {paragraphs.map((para, index) => (
+                            <p key={index}>{para}</p>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     </div>;

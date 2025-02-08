@@ -21,7 +21,7 @@ export const addSuggestionAPI = async (formData: FormData) => {
         return true
     } catch (err) {
         console.log(err)
-        throw err
+        return false
     }
 }
 

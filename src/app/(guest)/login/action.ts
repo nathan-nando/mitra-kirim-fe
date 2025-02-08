@@ -1,6 +1,6 @@
 "use server"
 
-import {apiAuth} from "@/api/api";
+import {apiAuth, getApi} from "@/api/api";
 import {httpRequest} from "@/utils/httpRequest";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
@@ -16,10 +16,8 @@ export const loginAPI = async (formData: FormData) => {
             const errMessage = await response?.json()
             throw new Error(errMessage.message || "Action: Failed Request")
         }
-        console.log(response, "IN ACTION")
-        const {token, refreshToken} = response
 
-        console.log(token)
+        const {token, refreshToken} = response
 
         if (!token || !refreshToken) {
             throw new Error("Action: Token is empty")
@@ -28,16 +26,16 @@ export const loginAPI = async (formData: FormData) => {
         cookie.set('X_APP_1', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 15 * 60 // 15 minutes
+            sameSite: 'lax',
+            path: "/",
         })
 
 
         cookie.set('X_APP_2', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 // 7 days
+            sameSite: 'lax',
+            path: "/",
         })
     } catch (err) {
         console.log(err)
@@ -45,40 +43,46 @@ export const loginAPI = async (formData: FormData) => {
     }
 }
 
-
 export const refreshAPI = async () => {
-    const cookie = await cookies()
-    const refreshToken = cookie.get("X_APP_2")?.value
-    const payload = {refreshToken}
+    const cookieStore =await  cookies();
+    const refreshToken = cookieStore.get("X_APP_2")?.value;
+
+    if (!refreshToken) {
+        throw new Error("No refresh token available");
+    }
 
     try {
-        const response = await httpRequest(apiAuth + "/refresh", {
+        const response = await fetch(getApi(apiAuth + "/refresh"), {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(payload)
-        })
-        if (response?.status >= 400) {
-            await logout()
-            const errMessage = await response?.json()
-            throw new Error(errMessage.message || "Action: Failed Request")
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ refreshToken })
+        });
+
+        if (!response.ok) {
+            throw new Error("Refresh failed");
         }
 
-        const {token} = response
+        const data = await response.json();
+        const { accessToken } = data;
 
-        if (!token) {
-            await logout()
-            throw new Error("Action: Token is empty")
+        if (!accessToken) {
+            throw new Error("No access token in refresh response");
         }
-        const cookie = await cookies()
-        cookie.set('X_APP_1', token, {
+
+        cookieStore.set('X_APP_1', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 15 * 60 // 15 minutes
-        })
-    } catch (err) {
-        console.log(err)
-        throw err
+            sameSite: 'lax',
+            path: '/',
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Refresh error:", error);
+        await logout();
+        throw error;
     }
 }
 

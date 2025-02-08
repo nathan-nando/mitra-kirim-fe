@@ -3,13 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import {camelCaseToReadable} from "@/utils/convertCamelCase";
+import {capitalizeWords} from "@/utils/capitilize";
 
 export async function Footer({socialMediaData, tokoData}) {
     const title = "PT. Mitra Kirim Horeca"
-
-    console.log(socialMediaData, "SOCIAL")
-    console.log(tokoData, "TOKO")
 
     return <div className={"footer"}>
         <div className={"d-flex flex-row text-background"}>
@@ -25,13 +22,13 @@ export async function Footer({socialMediaData, tokoData}) {
             </div>
             <div className={"d-flex col-2 flex-column gap-3"}>
                 {tokoData?.map(({key, value}, i) => <div key={i}>
-                    <Link href={value}><span className={"bi bi-shop"}></span> {camelCaseToReadable(key)}</Link>
+                    <Link href={value}><span className={"bi bi-shop"}></span> {capitalizeWords(key)}</Link>
                 </div>)}
             </div>
 
             <div className={"d-flex flex-column gap-3"}>
                 {socialMediaData?.map(({key, value}, i) => <div key={i}>
-                    <Link href={value}><span className={`bi ${mapIcon[key]}`}></span> {camelCaseToReadable(key)}</Link>
+                    <Link href={value}><span className={`bi ${mapIcon[key]}`}></span> {capitalizeWords(key)}</Link>
                 </div>)}
             </div>
 

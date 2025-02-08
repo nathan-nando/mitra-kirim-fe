@@ -5,8 +5,14 @@ import {refreshAPI} from "@/app/(guest)/login/action";
 
 export async function httpRequest(endpoint: string, params: RequestInit) {
     try {
-        const cookieInstance = await cookies()
-        const cookie = cookieInstance.get("X_APP_1")?.value
+        const cookieStore = await cookies()
+        const accessToken = cookieStore.get("X_APP_1")?.value
+
+        if (accessToken && isTokenExpired(accessToken)) {
+            console.log("TOKEN EXPIRED TRY TO REFRESH")
+            await refreshAPI()
+            console.log("REFRESH OK")
+        }
 
         if (!params.headers) {
             params.headers = new Headers();
@@ -14,15 +20,16 @@ export async function httpRequest(endpoint: string, params: RequestInit) {
             params.headers = new Headers(params.headers);
         }
 
-        if (cookie) {
-            (params.headers as Headers).set("Authorization", `Bearer ${cookie}`);
+        const currenAccessToken = cookieStore.get("X_APP_1")?.value
+            params.headers.set("Authorization", `Bearer ${accessToken}`);
+        if (currenAccessToken) {
+            console.log("HTTP REQ WITH BEARER")
         }
 
         const response = await fetch(getApi(endpoint), params);
         const jsonRes = await response.json()
         if (!response.ok) {
-            if (response.status == 401)
-                await refreshAPI()
+            console.log(response, "NOT OK IN HTTP REQUEST")
             return new NextResponse(JSON.stringify({message: jsonRes.message || "Request is failed"}), {
                 status: response.status || 500,
                 headers: {'Content-Type': 'application/json'},
@@ -33,5 +40,12 @@ export async function httpRequest(endpoint: string, params: RequestInit) {
         return new NextResponse(JSON.stringify(error))
     }
 }
+
+export const isTokenExpired = (token: string) => {
+    if (!token) return true;
+    const payload = JSON.parse(atob(token.split('.')[1])); // Decode token payload
+    return payload.exp * 1000 < Date.now(); // Check expiration
+};
+
 
 

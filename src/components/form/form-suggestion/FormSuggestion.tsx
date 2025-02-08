@@ -24,9 +24,12 @@ export function FormSuggestion() {
                 }
 
                 const err = await addSuggestionAPI(formData)
-                if (!err)
-                    toast.success("Berhasil mengirim kritik dan saran")
-
+                toast.dismiss()
+                if (err) {
+                    toast.error("Gagal mengirim kritik dan saran")
+                    return
+                }
+                toast.success("Berhasil mengirim kritik dan saran")
 
             }}
             className={"d-flex flex-column gap-4 col-12 col-lg-6 p-3 p-lg-0"}>

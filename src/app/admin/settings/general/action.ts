@@ -30,6 +30,7 @@ export async function updateAppAPI(body) {
             body: JSON.stringify(body),
         })
         if (response?.status >= 400) {
+            console.log(response)
             const errMessage = await response?.json()
             throw new Error(errMessage.message || "Action: Failed Request")
         }

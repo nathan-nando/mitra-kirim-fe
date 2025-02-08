@@ -1,112 +1,197 @@
 "use client"
-import {formatDate} from "@/utils/date";
-import {Detail} from "@/components/ui/detail/Detail";
 import {TableUI} from "@/components/ui/table/Table";
 import {Modal} from "react-bootstrap";
 import {modalHeader} from "@/utils/modal";
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
+import Image from "next/image";
+import Button from "@/components/ui/button/Button";
+import {toast} from "sonner";
+import {addTestimonialAPI, changeStatusAPI, deleteAPI, getTestimonialAPI} from "@/app/admin/testimonial/action";
+import {Detail} from "@/components/ui/detail/Detail";
 
-type TableRow = {
-    [key: string]: string | number;
-};
 
-type DetailData = {
-    name: string
-    createdDate: Date | string
-}
-
-type SelectedData = {
-    data?: DetailData
-    message?: string
-    reply?: string
-    hasReply?: number
+type ITestimonial = {
+    id?: number
+    nama?: string
+    img?: string
+    deskripsi?: string
+    slide?: number
+    createdDate?: string
+    createdBy?: string
+    updatedBy?: string
+    updatedDate?: string
 }
 
 export default function TestimonialAdm() {
-    const [dataList, setDataList] = useState([])
-    const [selectedData, setSelectedData] = useState<SelectedData>({})
+    const [dataList, setDataList] = useState<ITestimonial[]>([])
+    const [selectedData, setSelectedData] = useState<ITestimonial>({})
     const [loading, setLoading] = useState(false)
+    const [selectedImg, setSelectedImg] = useState("");
+
+
     //v view, a add, u update
     const [modeModal, setModal] = useState<"a" | "u" | "v">("v")
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const handleView = (row) => {
+    const handleView = (data: ITestimonial) => {
         setModal("v")
-        setSelectedData({
-            data: {
-                name: String(row.nama),
-                createdDate: formatDate(String(row.createdDate))
-            },
-        },)
+        setSelectedData(data)
+        setSelectedImg(`testimonials/${data.img!}`)
         handleShow()
     };
+
+    const resetForm = () => {
+        const form = document.getElementById('testimonialForm') as HTMLFormElement;
+        if (form) {
+            form.reset()
+        }
+        setSelectedImg("")
+
+    }
     const handleAdd = () => {
         setModal("a")
         handleShow()
+        resetForm()
     }
-    const handleUpdate = () => {
-        setModal("u")
-        handleShow()
+    const handleDelete = (data) => {
+        deleteTestimoniAPI(data.id)
+            .then(() => {
 
+            })
+            .catch(() => {
+                console.log("Failed delete testimonial")
+            })
     }
-    const handleDelete = () => {
-
+    const handleSwitch = async (data: ITestimonial, newValue: boolean) => {
+        const updatedData = [...dataList]
+        const updatedIndex = dataList.findIndex(v => v.id === data.id)
+        const updatedValue = newValue ? 1 : 0
+        await toggleAPI(data.id!, updatedValue)
+        updatedData[updatedIndex].slide = updatedValue
+        setDataList(updatedData)
     }
 
-    const renderOnView = (src: string) => {
-        return <>
+    const onImgChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setSelectedImg(URL.createObjectURL(file));
+        }
+    };
 
-            <iframe
-                className={"w-100 map-iframe"}
-                src={decodeURIComponent(src)}
-                height={500}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade">
-            </iframe>
-        </>
+    useEffect(() => {
+        setLoading(true)
+        getAllAPI()
+    }, [])
+
+    const getAllAPI = () => {
+        getTestimonialAPI(0, 100)
+            .then((data) => {
+                setDataList(data)
+                setLoading(false)
+            })
+            .catch(() => {
+                setLoading(false)
+            })
+    }
+    const toggleAPI = async (id: number, value: number) => {
+        toast.loading("Loading...")
+        setLoading(true)
+
+        const ok = await changeStatusAPI(id, value)
+        if (ok) {
+            toast.dismiss()
+            toast.success("Berhasil mengubah status slide")
+            getAllAPI()
+            return
+        }
+        toast.dismiss()
+        toast.error("Gagal mengubah status slide")
+        setLoading(false)
+        return false
+    }
+    const deleteTestimoniAPI = async (id: number) => {
+        toast.loading("Loading...")
+        setLoading(true)
+
+        const ok = await deleteAPI(id)
+        if (ok) {
+            toast.dismiss()
+            toast.success("Berhasil Menghapus testimoni")
+            getAllAPI()
+            return
+        }
+        toast.dismiss()
+        toast.error("Gagal Menghapus testimoni")
+        setLoading(false)
+        return false
     }
 
     const renderForm = () => {
         return <>
-            <form className={"d-flex flex-column gap-3 col-10 p-2 ps-5"}>
-                <div className={"d-flex flex-column gap-2"}>
-                    <label htmlFor="">Nama Lokasi</label>
-                    <div className="input-group mb-3">
-                        <span className="input-group-text bi bi-building-fill" id="basic-addon1"></span>
-                        <input type="text"
-                               className="form-control"
-                               placeholder=""
-                               aria-label="name"
-                               aria-describedby="basic-addon1"/>
+            <form action={async (formData: FormData) => {
+                let isValid: boolean = true
+                formData.forEach((_, key) => {
+                    if (!formData.get(key)) {
+                        isValid = false
+                    }
+                })
+
+                if (selectedImg === "") {
+                    isValid = false
+                }
+
+
+                if (!isValid) {
+                    toast.error("Isi semua form")
+                    return
+                }
+                toast.loading("Loading....")
+                const ok = await addTestimonialAPI(formData)
+                toast.dismiss()
+                resetForm()
+                if (!ok) {
+                    toast.error("Gagal menambah testimoni")
+                    return
+                }
+                toast.success("Berhasil menambah testimoni")
+                handleClose()
+                getAllAPI()
+
+            }} id={"testimonialForm"} className={"d-flex flex-column gap-3 col-10 p-2 ps-5 h-50"}>
+                <div className={"d-flex flex-column gap-2 col-10"}>
+                    <label>Nama</label>
+                    <input type="text" name={"nama"} className={"form-control"}/>
+                </div>
+                <div className={"d-flex flex-column gap-2 col-10"}>
+                    <label>Deskripsi</label>
+                    <textarea name={"deskripsi"} rows={3} className={"form-control"}></textarea>
+                </div>
+                <div className={"d-flex flex-column gap-2 col-10"}>
+                    <label>Gambar Testimoni</label>
+                    <input onChange={onImgChange} accept="image/*" type="file" name={"img"} className={"form-control"}/>
+                </div>
+                {selectedImg && (
+                    <div className="profile-picture-preview">
+                        <Image
+                            className={"shadow-sm border rounded"}
+                            src={selectedImg}
+                            width={200}
+                            height={200}
+                            alt="Profile Preview"
+                        />
                     </div>
-                </div>
-                <div className={"d-flex flex-column gap-2"}>
-                    <label htmlFor="">Deskripsi</label>
-                    <textarea className={"form-control"} name="description" cols={20} rows={7}></textarea>
-                </div>
-                <div className={"d-flex flex-column gap-2"}>
-                    <label htmlFor="">Link Google Maps</label>
-                    <textarea className={"form-control"} name="description" cols={20} rows={7}></textarea>
-                </div>
-
-                <div className={"d-flex justify-content-end"}>
-                    <button className={"btn btn-foreground"}>Submit</button>
+                )}
+                <div className={"col-lg-10  mt-4 d-flex justify-content-end"}>
+                    <Button name={"Save"} type={"submit"}/>
                 </div>
             </form>
         </>
     }
-    const renderOnUpdate = () => {
-        return <>
-            <form>
-                <input type="text" className={"form-control"}/>
-            </form>
-        </>
-    }
 
-    const fields: string[] = ['nama', 'deskripsi'];
+    const fields: string[] = ['nama', 'deskripsi', 'slide'];
 
     return <>
         <Breadcrumb items={["Testimoni"]}/>
@@ -116,15 +201,22 @@ export default function TestimonialAdm() {
             data={dataList}
             onView={handleView}
             onAdd={handleAdd}
-            onUpdate={handleUpdate}
             onDelete={handleDelete}
+            onSwitchChange={handleSwitch}
         />
-        <Modal className={"modal-xl text-black-custom"} show={show} onHide={handleClose}>
+        <Modal className={"modal-lg text-black-custom"} show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title className={"fw-bold"}>{modalHeader(modeModal)}</Modal.Title>
             </Modal.Header>
             <Modal.Body className={"col-12 d-flex flex-column gap-3"}>
-                <Detail data={selectedData.data}/>
+                {modeModal === "v" && <Detail data={selectedData}/>}
+                {selectedImg && <Image src={`/api/images/${selectedImg}`}
+                                       alt={"mitra kirim"}
+                                       width={400}
+                                       height={200}
+                                       className={"shadow-sm border border-4 border-light mb-4 ms-3"}
+                />}
+                {(modeModal === "a" || modeModal === "u") && renderForm()}
             </Modal.Body>
         </Modal>
     </>

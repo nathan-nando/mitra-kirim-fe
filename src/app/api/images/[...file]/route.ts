@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: { file: st
         console.log(filePath)
 
         // Construct the full path to the image
-        const fullPath = path.join('/home/nathan/mk-storage/assets', filePath);
+        const fullPath = path.join('/home/nathan/mk-storage', filePath);
         console.log( fullPath)
         // Check if the file exists
         if (!fs.existsSync(fullPath)) {

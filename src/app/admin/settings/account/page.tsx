@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function AccountAdm() {
     const [newPassword, setNewPassword] = useState("");
-    const [newProfilePicture, setNewProfilePicture] = useState(null);
+    const [newProfilePicture, setNewProfilePicture] = useState("");
 
     const handlePasswordChange = (event) => {
         setNewPassword(event.target.value);
