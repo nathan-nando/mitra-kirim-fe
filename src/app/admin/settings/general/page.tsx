@@ -15,7 +15,6 @@ import {
 import ButtonIcon from "@/components/ui/button/ButtonIcon";
 import {toast} from "sonner";
 import Image from "next/image";
-import {getTestimonialAPI} from "@/app/admin/testimonial/action";
 
 
 export default function GeneralAdm() {
@@ -53,16 +52,18 @@ export default function GeneralAdm() {
         setLoading(true)
         GetByTypeAPI(listTypes)
             .then((v => {
+                console.log(v)
                 setLoading(false)
                 setDataList(v)
             }))
-            .catch(() => {
+            .catch((err) => {
+                console.log(err)
                 setLoading(false)
             })
     }
 
     useEffect(() => {
-
+        getAPI()
     }, [])
 
 
@@ -258,7 +259,7 @@ export default function GeneralAdm() {
                     </div>
                     <div className={"d-flex flex-column justify-content-center align-items-center "}>
                         <div className="col">
-                            {selectedLogo && <Image src={`/api/images/${selectedLogo}`}
+                            {selectedLogo && <Image src={`/api/images/assets/${selectedLogo}`}
                                                     alt={"mitra kirim"}
                                                     width={100}
                                                     height={100}

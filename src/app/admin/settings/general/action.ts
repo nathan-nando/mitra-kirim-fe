@@ -6,6 +6,7 @@ import {httpRequest} from "@/utils/httpRequest";
 
 export async function GetByTypeAPI(types: string[]) {
     try {
+        console.log("CALL")
         const response = await httpRequest(apiConfiguration + "/type", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -16,6 +17,7 @@ export async function GetByTypeAPI(types: string[]) {
             const errMessage = await response?.json()
             throw new Error(errMessage.message || "Action: Failed Request")
         }
+        console.log(response, "DATA")
         return response
     } catch (error) {
         throw error

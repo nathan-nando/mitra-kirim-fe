@@ -37,6 +37,7 @@ export default function TestimonialAdm() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleView = (data: ITestimonial) => {
+        console.log(data)
         setModal("v")
         setSelectedData(data)
         setSelectedImg(`testimonials/${data.img!}`)

@@ -3,12 +3,15 @@
 import React, {useEffect, useState} from "react";
 import "./location.css"
 import {formatDate} from "@/utils/date";
-import {GetAllAPI} from "@/app/admin/location/action";
+import {addLocationAPI, GetAllAPI} from "@/app/admin/location/action";
 import {TableUI} from "@/components/ui/table/Table";
 import {Modal} from "react-bootstrap";
 import {Detail} from "@/components/ui/detail/Detail";
 import {modalHeader} from "@/utils/modal";
 import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
+import Button from "@/components/ui/button/Button";
+import {toast} from "sonner";
+import {addTestimonialAPI} from "@/app/admin/testimonial/action";
 
 type SelectedData = {
     data?: unknown
@@ -79,12 +82,40 @@ export default function LocationAdm() {
 
     const renderForm = () => {
         return <>
-            <form className={"d-flex flex-column gap-3 col-10 p-2 ps-5"}>
+            <form action={async (formData: FormData) => {
+                let isValid: boolean = true
+                let dataForm = {}
+
+                formData.forEach((_, key) => {
+                    if (!formData.get(key)) {
+                        isValid = false
+                    }
+                    dataForm[key] = formData[key]
+                })
+
+
+                if (!isValid) {
+                    toast.error("Isi semua form")
+                    return
+                }
+                toast.loading("Loading....")
+                const ok = await addLocationAPI(dataForm)
+                toast.dismiss()
+                if (!ok) {
+                    toast.error("Gagal menambah lokasi bisnis")
+                    return
+                }
+                toast.success("Berhasil menambah lokasi bisnis")
+                handleClose()
+                // getAllAPI()
+
+            }} id={"formLocation"} className={"d-flex flex-column gap-3 col-10 p-2 ps-5"}>
                 <div className={"d-flex flex-column gap-2"}>
                     <label htmlFor="">Nama Lokasi</label>
                     <div className="input-group mb-3">
-                        <span className="input-group-text bi bi-building-fill" id="basic-addon1"></span>
+                        <span className="input-group-text bi bi-building" id="basic-addon1"></span>
                         <input type="text"
+                               name={"nama"}
                                className="form-control"
                                placeholder=""
                                aria-label="name"
@@ -92,16 +123,44 @@ export default function LocationAdm() {
                     </div>
                 </div>
                 <div className={"d-flex flex-column gap-2"}>
+                    <label htmlFor="">Email</label>
+                    <div className="input-group mb-3">
+                        <span className="input-group-text bi bi-envelope" id="basic-addon1"></span>
+                        <input type="text"
+                               name={"email"}
+                               className="form-control"
+                               placeholder=""
+                               aria-label="name"
+                               aria-describedby="basic-addon1"/>
+                    </div>
+                </div>
+                <div className={"d-flex flex-column gap-2"}>
+                    <label htmlFor="">No Whatsapp</label>
+                    <div className="input-group mb-3">
+                        <span className="input-group-text bi bi-whatsapp" id="basic-addon1"></span>
+                        <input type="text"
+                               name={"whatsapp"}
+                               className="form-control"
+                               placeholder=""
+                               aria-label="name"
+                               aria-describedby="basic-addon1"/>
+                    </div>
+                </div>
+                <div className={"d-flex flex-column gap-2"}>
+                    <label htmlFor="">Alamat</label>
+                    <textarea className={"form-control"} name="alamat" rows={3}></textarea>
+                </div>
+                <div className={"d-flex flex-column gap-2"}>
                     <label htmlFor="">Deskripsi</label>
-                    <textarea className={"form-control"} name="description" cols={20} rows={7}></textarea>
+                    <textarea className={"form-control"} name="deskripsi" rows={3}></textarea>
                 </div>
                 <div className={"d-flex flex-column gap-2"}>
                     <label htmlFor="">Link Google Maps</label>
-                    <textarea className={"form-control"} name="description" cols={20} rows={7}></textarea>
+                    <textarea className={"form-control"} name="iframeLink" rows={6}></textarea>
                 </div>
 
-                <div className={"d-flex justify-content-end"}>
-                    <button className={"btn btn-foreground"}>Submit</button>
+                <div className={"d-flex justify-content-end mt-4"}>
+                    <Button type={"submit"} name={"Submit"}/>
                 </div>
             </form>
         </>
@@ -121,7 +180,7 @@ export default function LocationAdm() {
             onUpdate={handleUpdate}
             onDelete={handleDelete}
         />
-        <Modal className={"modal-xl text-black-custom"} show={show} onHide={handleClose}>
+        <Modal className={"modal-lg text-black-custom"} show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title className={"fw-bold"}>{modalHeader(modeModal)}</Modal.Title>
             </Modal.Header>
