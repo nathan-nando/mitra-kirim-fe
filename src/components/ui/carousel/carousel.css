@@ -1,0 +1,73 @@
+.embla {
+    height: 40vh;
+    background: var(--gray);
+    --slide-height: 20rem;
+    --slide-spacing: 0.5rem;
+    --slide-size: 30%;
+    /*border-radius: 20px !important;*/
+    /*padding: 1rem; !* Added padding to prevent border radius from being cut off *!*/
+}
+.embla__viewport {
+    overflow: hidden;
+}
+
+.embla__container {
+    display: flex;
+    touch-action: pan-y pinch-zoom;
+    margin-left: calc(var(--slide-spacing) * -1);
+}
+
+.embla__slide {
+    transform: translate3d(0, 0, 0);
+    flex: 0 0 30%; /* Match container flex */
+    min-width: 0;
+    padding-left: var(--slide-spacing);
+    height: 40vh; /* Match container height */
+    display: flex;
+    align-items: center;
+}
+
+.embla__play {
+    -webkit-tap-highlight-color: rgba(var(--background), 0.5);
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    touch-action: manipulation;
+    display: flex;
+    text-decoration: none;
+    cursor: pointer;
+    border: 0;
+    padding: 0 2.4rem;
+    margin: 0;
+    box-shadow: inset 0 0 0 0.2rem var(--foreground);
+    align-items: center;
+    justify-content: center;
+    justify-self: flex-end;
+    color: var(--foreground);
+    font-weight: 700;
+    font-size: 1.4rem;
+    min-width: 8.4rem;
+}
+
+
+.embla-image-slide {
+    width: 20vw;
+    height: auto;
+    max-height: 35vh;
+    object-fit: contain;
+    border-radius: 20px;  /* Increased border radius */
+    transition: transform 0.3s ease;  /* Smooth transform transition */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+}
+.embla-image-slide:hover {
+    transform: scale(1.02);  /* Slight zoom on hover */
+}
+
+@keyframes autoplay-progress {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(100%, 0, 0);
+    }
+}

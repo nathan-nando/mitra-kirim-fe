@@ -1,5 +1,4 @@
-export function ButtonWhatsapp() {
-    const whatsappNumber = "62859106907853";
+export function ButtonWhatsapp({whatsappNumber}) {
     const whatsappLink = `https://wa.me/${whatsappNumber}`;
 
     return (

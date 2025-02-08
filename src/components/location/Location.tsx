@@ -1,52 +1,44 @@
+"use server"
+
 import "./location.css"
 
-type location = {
-    src: string
-    title: string
-    description: string
+type ILocation = {
+    nama: string
+    alamat: string
+    deskripsi: string
+    email: string
+    whatsapp: string
+    iframeLink: string
 }
 
-export function Location() {
-    const listLocation: location[] = [
-        {
-            src: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.1581130408276!2d106.9133009!3d-6.242883!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e698d01021dd817%3A0xa938efce571d975c!2sSupplier%20Hotel%20Resto%20Kafe!5e0!3m2!1sid!2sid!4v1737031394108!5m2!1sid!2sid',
-            title: "Lokasi 1",
-            description: "Jl. Taman No.12 Blok E6, Duren Sawit, Durensawit, East Jakarta City, Jakarta\n",
-        },
-        {
-            src: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.6323026040245!2d106.88088169999999!3d-6.1799462!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5002a9ac153%3A0xd6d0f772f4f2567c!2sMitra%20Kirim!5e0!3m2!1sid!2sid!4v1737031575133!5m2!1sid!2sid',
-            title: "Lokasi 2",
-            description: "Jl. Panca Wardi No.2, RT.2/RW.10, Kayu Putih, Kec. Pulo Gadung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13210",
-        }
-    ]
-
+export async function Location(data: { locationList: ILocation[] }) {
     return <div className={"location"}>
         <div id="carouselExampleIndicators" className="carousel slide mb-5 location-carousel" data-bs-ride="carousel">
-        <h4 className={"fw-bold"}>Lokasi kami</h4>
-            <div className="carousel-indicators mb-4">
-                <button type="button"
-                        data-bs-target="#carouselExampleIndicators"
-                        data-bs-slide-to="0"
-                        className="active"
-                        aria-current="true"
-                        aria-label="Slide 1"></button>
-                <button type="button"
-                        data-bs-target="#carouselExampleIndicators"
-                        data-bs-slide-to="1"
-                        aria-label="Slide 2"></button>
+            <h4 className={"fw-bold"}>Lokasi kami</h4>
+            <div className="carousel-indicators mb-3">
+                {data.locationList.map((v, i) => {
+                    return <button key={i} type="button"
+                                   data-bs-target="#carouselExampleIndicators"
+                                   data-bs-slide-to={i === data.locationList.length ? 0 : i}
+                                   className={i === 0 ? "active" : ""}
+                                   aria-label={v.nama}></button>
+                })}
             </div>
             <div className="carousel-inner mx-auto ">
-                {listLocation.map((v, i) => {
+                {data.locationList.map((v, i) => {
                     return <div key={i} className={`carousel-item  ${i === 0 ? 'active' : ''}`}>
                         <iframe
                             className={"w-100 map-iframe"}
-                            src={v.src}
+                            src={decodeURIComponent(v.iframeLink)}
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade">
                         </iframe>
                         <div className="map-description p-4 mt-0 pb-0 bg-foreground text-background mx-auto carousel-caption d-none d-md-block">
-                            <h5 className={"fw-bold pb-2 text-accent"}>{v.title}</h5>
-                            <p className={"pb-4"}>{v.description}</p>
+                            <h5 className={"fw-bold pb-2 text-accent fs-4"}>{v.nama}</h5>
+                            <p className={"fs-5"}>{v.deskripsi}</p>
+                            <div className={"pb-4 d-flex flex-row gap-2 justify-content-center"}>
+                                <small><span className={"bi bi-envelope"}></span> {v.email} </small>
+                                <small><span className={"bi bi-whatsapp"}></span> {v.whatsapp} </small></div>
                         </div>
                     </div>
                 })}

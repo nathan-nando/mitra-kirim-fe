@@ -3,11 +3,13 @@ import Link from "next/link";
 import {ButtonWhatsapp} from "@/components/ui/button/ButtonWhatsapp";
 import Image from "next/image";
 
-export function NavbarGuest() {
+export function NavbarGuest({whatsappNumber}) {
     return <nav className="p-0 navbar navbar-expand-lg navbar-light bg-light navbar-guest">
         <div className="container d-flex flex-row">
             <Link href={"/"} className={"navbar-brand logo-text col-lg-5"}>
-                <h5 className={"fw-bold text-foreground"}>PT. Mitra Kirim Horeca</h5>
+                <div className={"bg-white-custom col-6 ps-4 pe-4 pb-2 pt-3 rounded-3 bg-foreground text-center"}>
+                    <h5 className={"fw-bold text-white nav-title"}>PT. Mitra Kirim Horeca</h5>
+                </div>
             </Link>
             <Link href={"/"} className={"col-10 col-lg-2"}>
                 <Image
@@ -27,7 +29,7 @@ export function NavbarGuest() {
             </button>
             <div className="collapse navbar-collapse justify-content-end"
                  id="navbarSupportedContent">
-                <ButtonWhatsapp/>
+                <ButtonWhatsapp whatsappNumber={whatsappNumber}/>
             </div>
         </div>
     </nav>

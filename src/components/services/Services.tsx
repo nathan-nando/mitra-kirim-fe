@@ -8,7 +8,7 @@ type IServices = {
     image: string
 }
 
-export function Services() {
+export function Services({data}) {
     const servicesList: IServices[] = [
         {
             title: "Penyediaan Bahan Berkualitas",
@@ -23,7 +23,7 @@ export function Services() {
         {
             title: "Layanan Konsultasi HORECA",
             description: "Solusi operasional bisnis maupun pemilihan produk.\nMembantu menemukan barang yang tepat sesuai kebutuhan dan saran profesional",
-            image: "service-3.jpg",
+            image: "service-2.jpg",
         },
     ]
 

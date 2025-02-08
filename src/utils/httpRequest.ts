@@ -18,8 +18,6 @@ export async function httpRequest(endpoint: string, params: RequestInit) {
             (params.headers as Headers).set("Authorization", `Bearer ${cookie}`);
         }
 
-        console.log(params.headers)
-
         const response = await fetch(getApi(endpoint), params);
         const jsonRes = await response.json()
         if (!response.ok) {

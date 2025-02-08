@@ -1,7 +1,7 @@
 import Image from "next/image";
 import "./hero.css"
 
-export function Hero() {
+export function Hero({img, description}) {
     const getTitle = () => {
         const result: string = "Menjamin Pasokan Hotel Restoran dan \nKafe dengan Bahan Berkualitas"
         return result

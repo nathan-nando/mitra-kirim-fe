@@ -1,0 +1,66 @@
+/* styles/StickyButton.module.css */
+.btn-sticky {
+    position: fixed;
+    bottom: 20px; /* Distance from the bottom */
+    right: 20px; /* Distance from the right */
+    z-index: 1000; /* Ensure it stays above other content */
+    background-color: var(--foreground); /* Button background color */
+    color: white; /* Button text color */
+    border: none;
+    border-radius: 50%; /* Circular button */
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-sticky:hover {
+    opacity: .95 /* Hover effect */
+}
+
+
+/* Adjust for medium screens (e.g., tablets) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .btn-sticky {
+        width: 70px; /* Slightly larger for tablets */
+        height: 70px;
+        font-size: 28px;
+        bottom: 30px; /* Further from the bottom */
+        right: 30px; /* Further from the right */
+    }
+}
+
+/* Adjust for small screens (e.g., mobile phones) */
+@media (max-width: 767px) {
+    .btn-sticky {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        bottom: 10px;
+        right: 10px;
+    }
+}
+
+/* Adjust for very small screens (e.g., iPhone 12 Pro) */
+@media (max-width: 480px) {
+    .btn-sticky {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        bottom: 5px;
+        right: 5px;
+    }
+}
+
+/* Adjust for large screens (e.g., desktops) */
+@media (min-width: 1025px) {
+    .btn-sticky {
+        width: 60px; /* Default size for desktops */
+        height: 60px;
+        font-size: 24px;
+        bottom: 20px;
+        right: 20px;
+    }
+}

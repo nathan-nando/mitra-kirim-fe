@@ -3,7 +3,7 @@
 import "./form-suggestion.css"
 import Button from "@/components/ui/button/Button";
 import {toast} from "sonner";
-import {addSuggestion} from "@/app/(guest)/action";
+import {addSuggestionAPI} from "@/app/(guest)/action";
 
 export function FormSuggestion() {
     const header = "Kritik dan Saran"
@@ -23,7 +23,7 @@ export function FormSuggestion() {
                     return
                 }
 
-                const err = await addSuggestion(formData)
+                const err = await addSuggestionAPI(formData)
                 if (!err)
                     toast.success("Berhasil mengirim kritik dan saran")
 
@@ -60,7 +60,7 @@ export function FormSuggestion() {
                 >
                     </textarea>
             </div>
-            <Button/>
+            <Button type={"submit"}/>
         </form>
 
     </div>

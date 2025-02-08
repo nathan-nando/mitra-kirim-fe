@@ -1,6 +1,9 @@
+"use client"
+
 import "./testimonial.css"
 import Image from "next/image";
 import {Line} from "@/components/ui/line/Line";
+import {CarouselCustom} from "@/components/ui/carousel/CarouselCustom";
 
 export function Testimonial() {
     const header = "Testimoni Konsumen Setia"
@@ -49,13 +52,22 @@ export function Testimonial() {
         })
     }
 
+    const slides = [
+        '/images/person-1.jpg',
+        '/images/person-3.jpg',
+        '/images/person-2.jpg',
+        '/images/person-1.jpg',
+        '/images/person-3.jpg',
+        '/images/person-2.jpg',
+        '/images/person-1.jpg',
+    ];
 
-    return <div className={" container testimonial "}>
+
+    return <div className={" testimonial "}>
         <h4 className={"text-center"}>{header}</h4>
         <blockquote style={{whiteSpace: "pre-wrap"}}>{description}</blockquote>
-        <div className={"testimonial-wrapper "}>
-            {card()}
-        </div>
+        <CarouselCustom  slides={slides}/>
+
     </div>
 }
 
