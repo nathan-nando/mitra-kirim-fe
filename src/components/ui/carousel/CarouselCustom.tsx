@@ -10,7 +10,7 @@ export const CarouselCustom = ({slides}) => {
     const [emblaRef, emblaApi] =
         useEmblaCarousel({loop: true,watchDrag: false },
             [AutoScroll({
-                speed: 2,
+                speed: 1,
                 stopOnInteraction: false,
                 stopOnFocusIn: false,
                 stopOnMouseEnter: false,
@@ -30,7 +30,7 @@ export const CarouselCustom = ({slides}) => {
                     <div className="embla__slide" key={index}>
                         <Image
                             className={"embla-image-slide"}
-                            src={slide} alt={`Slide ${index + 1}`}
+                            src={`/api/images/testimonials/${slide}`} alt={`Slide ${index + 1}`}
                             width={100} height={60}/>
                     </div>
                 ))}

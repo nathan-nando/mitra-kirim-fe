@@ -1,5 +1,5 @@
 .embla {
-    height: 40vh;
+    height: 50vh;
     background: var(--gray);
     --slide-height: 20rem;
     --slide-spacing: 0.5rem;
@@ -22,7 +22,7 @@
     flex: 0 0 30%; /* Match container flex */
     min-width: 0;
     padding-left: var(--slide-spacing);
-    height: 40vh; /* Match container height */
+    height: 50vh; /* Match container height */
     display: flex;
     align-items: center;
 }
@@ -51,10 +51,10 @@
 
 
 .embla-image-slide {
-    width: 20vw;
-    height: auto;
-    max-height: 35vh;
-    object-fit: contain;
+    width: 25vw;
+    height: 27vh;
+    /*max-height: 35vh;*/
+    /*object-fit: contain;*/
     border-radius: 20px;  /* Increased border radius */
     transition: transform 0.3s ease;  /* Smooth transform transition */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Subtle shadow */

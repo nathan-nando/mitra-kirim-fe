@@ -13,6 +13,7 @@ import {getConfigurationAPI} from "@/app/(guest)/action";
 interface IData {
     config: keyVal[]
     location: ILocation[]
+    testimonials: string[]
 }
 
 interface keyVal {
@@ -32,7 +33,9 @@ export interface ILocation {
 
 export default async function Home() {
     const data: IData = await getConfigurationAPI()
-    const {config, location} = data
+    const {config, location, testimonials} = data
+
+    console.log(testimonials, "ARR")
 
     let heroImg, heroDesc, whatsappNumber, appName, appDescription , appLogo = ""
     const serviceData: unknown[] = []
@@ -76,10 +79,10 @@ export default async function Home() {
     return (
         <>
             <ButtonSticky whatsappNumber={whatsappNumber}/>
-            <NavbarGuest whatsappNumber={whatsappNumber}/>
-            <Hero img={heroImg} description={heroDesc}/>
+            <NavbarGuest whatsappNumber={whatsappNumber} appName={appName}/>
+            <Hero img={heroImg} description={heroDesc} appDescription={appDescription}/>
             <Services data={serviceData}/>
-            <Testimonial/>
+            <Testimonial slides={testimonials}/>
             <FormSuggestion/>
             <Location locationList={location}/>
             <Footer socialMediaData={socialData} tokoData={tokoData}/>

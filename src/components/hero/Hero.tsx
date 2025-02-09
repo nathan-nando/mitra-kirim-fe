@@ -2,12 +2,7 @@ import Image from "next/image";
 import "./hero.css"
 import {withParagraphs} from "@/utils/helpers";
 
-export function Hero({img, description}) {
-    console.log("DESCRIPTION", description)
-    const getTitle = () => {
-        const result: string = "Menjamin Pasokan Hotel Restoran dan \nKafe dengan Bahan Berkualitas"
-        return result
-    }
+export function Hero({img, description, appDescription ="Selamat Datang"}) {
 
     const paragraphs = withParagraphs(description)
 
@@ -18,7 +13,7 @@ export function Hero({img, description}) {
         <h5
             className={"text-center fw-bold "}
             style={{whiteSpace: "pre-wrap"}}>
-            {getTitle()}
+            {appDescription}
         </h5>
         <div className={"d-flex flex-column flex-lg-row align-items-center mt-3 mt-md-5"}>
             <div className={"col ms-0 ms-md-5"}>

@@ -32,7 +32,7 @@ export function FormSuggestion() {
                 toast.success("Berhasil mengirim kritik dan saran")
 
             }}
-            className={"d-flex flex-column gap-4 col-12 col-lg-6 p-3 p-lg-0"}>
+            className={"d-flex flex-column gap-4 col-12 col-lg-5 p-3 p-lg-0"}>
             <div className={"d-flex flex-column flex-lg-row justify-content-between"}>
                 <div className="form-group col-12 col-lg-5">
                     <label htmlFor="nameInput">Name</label>
@@ -58,7 +58,7 @@ export function FormSuggestion() {
                 <textarea
                     className="form-control"
                     id="textareaMessage"
-                    rows={7}
+                    rows={5}
                     name="message"
                 >
                     </textarea>
