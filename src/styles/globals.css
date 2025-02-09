@@ -161,7 +161,7 @@ blockquote span {
     margin-top: 1em;
 }
 
-label{
+label {
     font-size: .9vw;
 }
 
@@ -173,17 +173,16 @@ th {
     font-size: .9vw !important;
 }
 
-td, td button{
+td, td button {
     font-size: .9vw !important;
 }
 
-button{
-    font-size: .9vw!important;
+button {
+    font-size: .9vw !important;
 }
 
-input ,textarea
-{
-    font-size:.9vw!important;
+input, textarea {
+    font-size: .9vw !important;
 }
 
 
@@ -262,8 +261,8 @@ input ,textarea
     opacity: 0.8;
 }
 
-.btn-foreground:hover{
-    opacity: .9!important;
+.btn-foreground:hover {
+    opacity: .9 !important;
 }
 
 .active {
@@ -297,6 +296,17 @@ td:first-child, th:first-child {
     background: var(--foreground) !important;
     border: none;
 }
+
+.form-check-input {
+    width: 3vw!important;
+    height: 1.5vw!important;
+    border-color: var(--foreground)!important;
+}
+
+.form-check-input:checked {
+    background-color: var(--foreground) !important;
+}
+
 
 @media (max-width: 768px) {
     body {

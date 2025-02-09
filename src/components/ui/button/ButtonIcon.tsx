@@ -8,6 +8,6 @@ export default function ButtonIcon({icon = "bi-check", severity="primary", cb}) 
         disabled={pending}
         type={"button"}
         className={`btn btn-${severity}`}>
-        <span className={`bi ${icon} `}></span>
+        <span className={`bi ${icon}`}></span>
     </button>
 }

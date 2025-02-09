@@ -1,9 +1,8 @@
 "use client"
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "./location.css"
-import {formatDate} from "@/utils/date";
-import {addLocationAPI, GetAllAPI} from "@/app/admin/location/action";
+import {addLocationAPI, deleteLocationAPI, GetAllAPI, updateLocationAPI} from "@/app/admin/location/action";
 import {TableUI} from "@/components/ui/table/Table";
 import {Modal} from "react-bootstrap";
 import {Detail} from "@/components/ui/detail/Detail";
@@ -11,7 +10,7 @@ import {modalHeader} from "@/utils/modal";
 import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
 import Button from "@/components/ui/button/Button";
 import {toast} from "sonner";
-import {addTestimonialAPI} from "@/app/admin/testimonial/action";
+import ButtonIcon from "@/components/ui/button/ButtonIcon";
 
 type SelectedData = {
     data?: unknown
@@ -24,8 +23,31 @@ export default function LocationAdm() {
     const [loading, setLoading] = useState(false)
     //v view, a add, u update
     const [modeModal, setModal] = useState<"a" | "u" | "v">("v")
+    const [fullscreen, setFullscreen] = useState<true | string | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down'>(true)
+
+
+    const [formState, setFormState] = useState({
+        id: "",
+        nama: "",
+        email: "",
+        whatsapp: "",
+        alamat: "",
+        deskripsi: "",
+        iframeLink: "",
+    });
+
+    const toggleFullscreen = () => {
+        if (fullscreen === true)
+            setFullscreen("lg-down")
+        else
+            setFullscreen(true)
+    }
 
     useEffect(() => {
+        getAPI()
+    }, [])
+
+    const getAPI = () => {
         setLoading(true)
         GetAllAPI()
             .then((v => {
@@ -35,37 +57,70 @@ export default function LocationAdm() {
             .catch(() => {
                 setLoading(false)
             })
-    }, [])
+    }
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleView = (row) => {
         setModal("v")
+        console.log(row)
         setSelectedData({
             data: {
                 name: String(row.nama),
-                deskripsi: String(row.deskripsi),
                 email: String(row.email),
                 whatsapp: String(row.whatsapp),
-                createdDate: formatDate(String(row.createdDate))
+                alamat: String(row.alamat),
+                deskripsi: String(row.deskripsi),
+                createdDate: row.createdDate,
+                createdBy: String(row.createdBy),
+                updatedDate: row.updatedDate,
+                updatedBy: String(row.updatedBy),
             },
             iframeLink: row.iframeLink,
         },)
         handleShow()
     };
     const handleAdd = () => {
+        setFullscreen("lg-down")
         setModal("a")
         handleShow()
     }
-    const handleUpdate = () => {
+    const handleUpdate = (data) => {
+        setFormState({
+            id: data.id,
+            nama: data.nama || "",
+            email: data.email || "",
+            whatsapp: data.whatsapp || "",
+            alamat: data.alamat || "",
+            deskripsi: data.deskripsi || "",
+            iframeLink: data.iframeLink || "",
+        });
         setModal("u")
         handleShow()
-
     }
-    const handleDelete = () => {
-
+    const handleDelete = (data) => {
+        setLoading(true)
+        toast.loading("Loading...")
+        deleteLocationAPI(data.id)
+            .then((v => {
+                toast.dismiss()
+                toast.success("Berhasil menghapus lokasi")
+                getAPI()
+            }))
+            .catch(() => {
+                toast.dismiss()
+                toast.error("Gagal menghapus lokasi")
+                setLoading(false)
+            })
     }
+
+    const handleChange = (e) => {
+        setFormState({
+            ...formState,
+            [e.target.name]: e.target.value,
+        });
+    };
 
     const renderOnView = (src: string) => {
         return <>
@@ -84,30 +139,40 @@ export default function LocationAdm() {
         return <>
             <form action={async (formData: FormData) => {
                 let isValid: boolean = true
-                let dataForm = {}
+                let dataForm: any = {}
 
-                formData.forEach((_, key) => {
+                formData.forEach((value, key) => {
                     if (!formData.get(key)) {
                         isValid = false
                     }
-                    dataForm[key] = formData[key]
+                    dataForm[key] = value
                 })
-
 
                 if (!isValid) {
                     toast.error("Isi semua form")
                     return
                 }
+
+                let ok: boolean | void
                 toast.loading("Loading....")
-                const ok = await addLocationAPI(dataForm)
+                if (modeModal === "a") {
+                    ok = await addLocationAPI(dataForm).catch((err) => {
+                        console.log(err)
+                    })
+                } else {
+                    dataForm.id = formState.id
+                    ok = await updateLocationAPI(dataForm).catch((err) => {
+                        console.log(err)
+                    })
+                }
                 toast.dismiss()
                 if (!ok) {
-                    toast.error("Gagal menambah lokasi bisnis")
+                    toast.error("Gagal menyimpan lokasi bisnis")
                     return
                 }
-                toast.success("Berhasil menambah lokasi bisnis")
+                toast.success("Berhasil menyimpan lokasi bisnis")
+                getAPI()
                 handleClose()
-                // getAllAPI()
 
             }} id={"formLocation"} className={"d-flex flex-column gap-3 col-10 p-2 ps-5"}>
                 <div className={"d-flex flex-column gap-2"}>
@@ -115,7 +180,7 @@ export default function LocationAdm() {
                     <div className="input-group mb-3">
                         <span className="input-group-text bi bi-building" id="basic-addon1"></span>
                         <input type="text"
-                               name={"nama"}
+                               name={"nama"} onChange={handleChange} value={formState.nama}
                                className="form-control"
                                placeholder=""
                                aria-label="name"
@@ -127,7 +192,7 @@ export default function LocationAdm() {
                     <div className="input-group mb-3">
                         <span className="input-group-text bi bi-envelope" id="basic-addon1"></span>
                         <input type="text"
-                               name={"email"}
+                               name={"email"} onChange={handleChange} value={formState.email}
                                className="form-control"
                                placeholder=""
                                aria-label="name"
@@ -139,7 +204,7 @@ export default function LocationAdm() {
                     <div className="input-group mb-3">
                         <span className="input-group-text bi bi-whatsapp" id="basic-addon1"></span>
                         <input type="text"
-                               name={"whatsapp"}
+                               name={"whatsapp"} onChange={handleChange} value={formState.whatsapp}
                                className="form-control"
                                placeholder=""
                                aria-label="name"
@@ -148,15 +213,30 @@ export default function LocationAdm() {
                 </div>
                 <div className={"d-flex flex-column gap-2"}>
                     <label htmlFor="">Alamat</label>
-                    <textarea className={"form-control"} name="alamat" rows={3}></textarea>
+                    <textarea
+                        className={"form-control"}
+                        name="alamat"
+                        onChange={handleChange}
+                        value={formState.alamat}
+                        rows={3}></textarea>
                 </div>
                 <div className={"d-flex flex-column gap-2"}>
                     <label htmlFor="">Deskripsi</label>
-                    <textarea className={"form-control"} name="deskripsi" rows={3}></textarea>
+                    <textarea
+                        className={"form-control"}
+                        name="deskripsi"
+                        onChange={handleChange}
+                        value={formState.deskripsi}
+                        rows={3}></textarea>
                 </div>
                 <div className={"d-flex flex-column gap-2"}>
                     <label htmlFor="">Link Google Maps</label>
-                    <textarea className={"form-control"} name="iframeLink" rows={6}></textarea>
+                    <textarea
+                        className={"form-control"}
+                        name="iframeLink"
+                        onChange={handleChange}
+                        value={formState.iframeLink}
+                        rows={6}></textarea>
                 </div>
 
                 <div className={"d-flex justify-content-end mt-4"}>
@@ -180,9 +260,19 @@ export default function LocationAdm() {
             onUpdate={handleUpdate}
             onDelete={handleDelete}
         />
-        <Modal className={"modal-lg text-black-custom"} show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title className={"fw-bold"}>{modalHeader(modeModal)}</Modal.Title>
+        <Modal className={"modal-lg text-black-custom"} fullscreen={fullscreen} show={show} onHide={handleClose}>
+            <Modal.Header>
+                <div className={"pe-3 col-12 d-flex flex-row justify-content-between"}>
+                    <Modal.Title className={"fw-bold"}>{modalHeader(modeModal)}</Modal.Title>
+                    <div className={"d-flex flex-row gap-3"}>
+                        <ButtonIcon icon={"bi-fullscreen text-black-custom"} severity={" p-0"} cb={() => {
+                            toggleFullscreen()
+                        }}/>
+                        <ButtonIcon icon={"bi-x fs-4 text-black-custom"} severity={" p-0"} cb={() => {
+                            handleClose()
+                        }}/>
+                    </div>
+                </div>
             </Modal.Header>
             <Modal.Body className={"col-12 d-flex flex-column gap-3"}>
                 {modeModal === "v" ? renderOnView(selectedData.iframeLink!) : ""}

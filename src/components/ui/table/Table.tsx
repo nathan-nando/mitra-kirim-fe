@@ -1,4 +1,4 @@
-import { JSX, useState } from "react";
+import React, { JSX, useState } from "react";
 import "./table.css";
 import { capitalizeWords } from "@/utils/capitilize";
 import HorizontalLineLoading from "@/components/ui/loading/Horizontal";
@@ -256,6 +256,14 @@ export function TableUI({
                                         </div>
                                     </td>
                                 );
+                            } else if(field === "status" && Object.keys(row).includes("hasReplied")){
+                                return <td key={field+colIndex} className={"text-center"}>
+                                    {row[field] == 0 &&
+                                        <span className="badge bg-light text-black-custom p-3">Belum Dibalas</span>}
+                                    {row[field] == 1 &&
+                                        <span className="badge bg-foreground text-background p-3">Sudah Dibalas</span>
+                                    }
+                                </td>
                             } else {
                                 return (
                                     <td key={field + colIndex}>

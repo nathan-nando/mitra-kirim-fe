@@ -7,6 +7,7 @@ export const apiConfiguration =  "/configuration"
 export const apiTestimonial =  "/testimonial"
 export const apiLayout =  "/layout"
 export const apiSettings =  "/settings"
+export const apiUser =  "/user"
 export const apiPublic =  "/public"
 
 

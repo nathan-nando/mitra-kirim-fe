@@ -1,155 +1,340 @@
 "use client";
 
-import { Breadcrumb } from "@/components/ui/breadcrumb/breadcrumb";
-import { useState } from "react";
+import "./account.css"
+import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
+import React, {useEffect, useState} from "react";
+import HorizontalLineLoading from "@/components/ui/loading/Horizontal";
+import ButtonIcon from "@/components/ui/button/ButtonIcon";
+import {getUserAPI, updateUserAPI, updateUserPictureAPI} from "@/app/admin/settings/account/action";
+import Image from "next/image";
+import {toast} from "sonner";
+import {addLocationAPI, updateLocationAPI} from "@/app/admin/location/action";
+
+interface IUser {
+    name: string;
+    username: string;
+    title: string;
+    email: string;
+    phone: string;
+    img: string;
+    status: number;
+    password: string;
+}
 
 export default function AccountAdm() {
-    const [newPassword, setNewPassword] = useState("");
+    const [user, setUser] = useState<IUser>({
+        name: '',
+        username: '',
+        title: '',
+        email: '',
+        phone: '',
+        img: '',
+        status: 0,
+        password: ''
+    });
+
+    const [formState, setFormState] = useState<IUser>({
+        name: '',
+        username: '',
+        title: '',
+        email: '',
+        phone: '',
+        img: '',
+        status: 0,
+        password: ''
+    });
+
+    const [loading, setLoading] = useState(false);
+    const [isEditingForm, setIsEditingForm] = useState(false);
+    const [isEditingPicture, setIsEditingPicture] = useState(false);
     const [newProfilePicture, setNewProfilePicture] = useState("");
+    const [selectedFile, setSelectedFile] = useState<File>();
 
-    const handlePasswordChange = (event) => {
-        setNewPassword(event.target.value);
-    };
-
-    const handleProfilePictureChange = (event) => {
-        const file = event.target.files[0];
+    const handleProfilePictureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
         if (file) {
+            setSelectedFile(file)
             setNewProfilePicture(URL.createObjectURL(file));
         }
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // Proses penggantian password dan foto profil
-        console.log("New password: ", newPassword);
-        console.log("New profile picture: ", newProfilePicture);
+    const getAPI = () => {
+        setLoading(true);
+        getUserAPI()
+            .then((userData: IUser) => {
+                setUser({...user, ...userData});
+                setFormState({...user, ...userData});
+                setLoading(false);
+            })
+            .catch(err => {
+                setLoading(false);
+            });
+    };
+
+    useEffect(() => {
+        getAPI();
+    }, []);
+
+    const onSubmitPicture = async () => {
+        if (!selectedFile) {
+            toast.warning("Tidak ada perubahan gambar")
+            return
+        }
+        const formData = new FormData
+        formData.append("img", selectedFile)
+        console.log(formData)
+        toast.loading("Loading...")
+        const ok = await updateUserPictureAPI(formData).catch((err) => {
+            console.log(err)
+        })
+        toast.dismiss()
+        setNewProfilePicture("")
+        setSelectedFile(undefined)
+
+        if (!ok) {
+            toast.error("Gagal upload file")
+            return
+        }
+
+        toast.success("Berhasil mengubah gambar")
+        getAPI()
+    };
+
+    const onSubmitForm = async () => {
+        setLoading(true)
+
+        let isValid: boolean = true
+        let dataForm: any = {}
+
+        Object.keys(formState).map(key => {
+            if (!formState[key]) {
+                console.log(key)
+                console.log(formState[key])
+                isValid = false
+            }
+        })
+
+        if (!isValid) {
+            toast.error("Isi semua form")
+            return
+        }
+
+        toast.loading("Loading...")
+        const ok = await updateUserAPI(formState).catch((err) => {
+            console.log(err)
+        })
+        toast.dismiss()
+
+        if (!ok) {
+            toast.error("Password salah")
+            return
+        }
+
+        toast.success("Berhasil mengubah informasi akun")
+        getAPI()
+
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.target;
+        setFormState(prev => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
     return (
         <>
-            <style jsx>{`
-                .account-settings-container {
-                    padding: 2rem;
-                    max-width: 600px;
-                    margin-left: 0;
-                    margin-right: 0;
-                    background-color: transparent;
-                    box-shadow: none;
-                }
-
-                .section-title {
-                    font-size: 1.8rem;
-                    margin-bottom: 1.5rem;
-                    color: #333;
-                    text-align: left;
-                }
-
-                .form-container {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1.5rem;
-                }
-
-                .form-group {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.5rem;
-                }
-
-                label {
-                    font-size: 1rem;
-                    color: #555;
-                    text-align: left;
-                }
-
-                .input-field,
-                .file-input {
-                    padding: 0.8rem;
-                    border-radius: 6px;
-                    border: 1px solid #ccc;
-                    font-size: 1rem;
-                    outline: none;
-                    transition: all 0.3s;
-                    width: 100%;
-                }
-
-                .input-field:focus,
-                .file-input:focus {
-                    border-color: #4CAF50;
-                }
-
-                .profile-picture-preview {
-                    margin-top: 1rem;
-                    display: flex;
-                    justify-content: flex-start;
-                }
-
-                .profile-preview {
-                    max-width: 150px;
-                    max-height: 150px;
-                    border-radius: 50%;
-                    object-fit: cover;
-                }
-
-                .submit-btn {
-                    padding: 1rem;
-                    background-color: #4F7942;;
-                    color: white;
-                    border: none;
-                    border-radius: 6px;
-                    font-size: 1.2rem;
-                    cursor: pointer;
-                    transition: all 0.3s;
-                    align-self: flex-start;
-                    width: auto;
-                    margin-top: 1rem;
-                }
-
-                .submit-btn:hover {
-                    background-color:rgb(71, 107, 60);;
-                }
-            `}</style>
-            <Breadcrumb items={["Settings", "Account"]} />
-            <div className="account-settings-container">
-                <h2 className="section-title">Update Account Details</h2>
-                <form onSubmit={handleSubmit} className="form-container">
-                    <div className="form-group">
-                        <label htmlFor="password">New Password :</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={newPassword}
-                            onChange={handlePasswordChange}
-                            placeholder="Enter new password"
-                            className="input-field"
+            <Breadcrumb items={["Settings", "Account"]}/>
+            {loading && <HorizontalLineLoading/>}
+            <form>
+                {user.img && !newProfilePicture && (
+                    <div className="d-flex justify-content-center">
+                        <Image
+                            className="shadow-sm border-light user-picture"
+                            width={200}
+                            height={200}
+                            src={`/api/images/users/${user.img}`}
+                            alt="user-img"
                         />
                     </div>
+                )}
 
-                    <div className="form-group">
-                        <label htmlFor="profile-picture">Change Profile Picture :</label>
-                        <input
-                            type="file"
-                            id="profile-picture"
-                            accept="image/*"
-                            onChange={handleProfilePictureChange}
-                            className="file-input"
+                {newProfilePicture && (
+                    <div className="d-flex justify-content-center">
+                        <Image
+                            className="shadow-sm border-light user-picture"
+                            width={200}
+                            height={200}
+                            src={newProfilePicture}
+                            alt="user-img"
                         />
-                        {newProfilePicture && (
-                            <div className="profile-picture-preview">
-                                <img
-                                    src={newProfilePicture}
-                                    alt="Profile Preview"
-                                    className="profile-preview"
-                                />
-                            </div>
+                    </div>
+                )}
+
+                <div className="d-flex flex-row justify-content-center mt-3">
+                    <div className="d-flex flex-row gap-3">
+                        {isEditingPicture && (
+                            <ButtonIcon
+                                severity="danger"
+                                icon="bi-x"
+                                cb={() => {
+                                    setIsEditingPicture(false);
+                                    setNewProfilePicture("");
+                                }}
+                            />
+                        )}
+                        {isEditingPicture && (
+                            <ButtonIcon
+                                severity="primary"
+                                icon="bi-check"
+                                cb={async () => {
+                                    setIsEditingPicture(false);
+                                    await onSubmitPicture();
+                                }}
+                            />
+                        )}
+                        {!isEditingPicture && (
+                            <ButtonIcon
+                                severity="primary"
+                                icon="bi-pen"
+                                cb={() => setIsEditingPicture(true)}
+                            />
                         )}
                     </div>
+                </div>
 
-                    <button type="submit" className="submit-btn">
-                        Save Changes
-                    </button>
-                </form>
-            </div>
+                {isEditingPicture && (
+                    <div className="d-flex flex-column gap-2 mt-3 col-12 align-items-center">
+                        <div className="col-6">
+                            <label htmlFor="profile-picture">Change Profile Picture:</label>
+                            <input
+                                type="file"
+                                id="profile-picture"
+                                accept="image/*"
+                                disabled={!isEditingPicture}
+                                onChange={handleProfilePictureChange}
+                                className="form-control"
+                            />
+                        </div>
+                    </div>
+                )}
+            </form>
+
+            <form className="text-black-custom col-10 mt-5 ms-3">
+                <div className="d-flex flex-row justify-content-between col-10">
+                    <small className="fw-bold text-foreground">Account Information</small>
+                    <div className="d-flex flex-row gap-3">
+                        {isEditingForm && (
+                            <ButtonIcon
+                                severity="danger"
+                                icon="bi-x"
+                                cb={() => {
+                                    setIsEditingForm(false)
+                                    setFormState(user)
+                                }
+                                }
+                            />
+                        )}
+                        {isEditingForm && (
+                            <ButtonIcon
+                                severity="primary"
+                                icon="bi-check"
+                                cb={() => {
+                                    onSubmitForm()
+                                    setIsEditingForm(false)
+                                }
+                                }
+                            />
+                        )}
+                        {!isEditingForm && (
+                            <ButtonIcon
+                                severity="primary"
+                                icon="bi-pen"
+                                cb={() => setIsEditingForm(true)}
+                            />
+                        )}
+                    </div>
+                </div>
+
+                <fieldset disabled={!isEditingForm} className="col mt-4">
+                    <div className="row gap-4">
+                        <div className="col-5 d-flex flex-column gap-2">
+                            <label>Name</label>
+                            <input
+                                onChange={handleChange}
+                                value={formState.name}
+                                type="text"
+                                className="form-control"
+                                name="name"
+                            />
+                        </div>
+                        <div className="col-5 d-flex flex-column gap-2">
+                            <label>Role</label>
+                            <input
+                                onChange={handleChange}
+                                value={formState.title}
+                                type="text"
+                                className="form-control"
+                                name="title"
+                            />
+                        </div>
+                        <div className="col-5 d-flex flex-column gap-2">
+                            <label>Email</label>
+                            <input
+                                onChange={handleChange}
+                                value={formState.email}
+                                type="text"
+                                className="form-control"
+                                name="email"
+                            />
+                        </div>
+                        <div className="col-5 d-flex flex-column gap-2">
+                            <label>Phone</label>
+                            <input
+                                onChange={handleChange}
+                                value={formState.phone}
+                                type="text"
+                                className="form-control"
+                                name="phone"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row gap-4 mt-5 mb-5">
+                        <div className="col-5 d-flex flex-column gap-2">
+                            <label>Username</label>
+                            <div className="input-group mb-3">
+                                <span className="input-group-text bi bi-person" id="basic-addon1"></span>
+                                <input
+                                    onChange={handleChange}
+                                    value={formState.username}
+                                    type="text"
+                                    name="username"
+                                    className="form-control"
+                                    aria-label="username"
+                                    aria-describedby="basic-addon1"
+                                />
+                            </div>
+                        </div>
+                        <div className="col-5 d-flex flex-column gap-2">
+                            <label>Password</label>
+                            <div className="input-group mb-3">
+                                <span className="input-group-text bi bi-key" id="basic-addon1"></span>
+                                <input
+                                    onChange={handleChange}
+                                    value={formState.password}
+                                    type="password"
+                                    name="password"
+                                    className="form-control"
+                                    aria-label="password"
+                                    aria-describedby="basic-addon1"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
         </>
     );
 }

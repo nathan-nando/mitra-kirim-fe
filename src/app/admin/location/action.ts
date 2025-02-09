@@ -21,14 +21,52 @@ export async function GetAllAPI() {
 
 export async function addLocationAPI(body) {
     try {
+        console.log("body", body)
         const response = await httpRequest(apiLocation, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(body),
         })
         if (response?.status >= 400) {
-            console.log(response)
             const errMessage = await response?.json()
+            console.log(errMessage)
+            throw new Error(errMessage.message || "Action: Failed Request")
+        }
+        return true
+    } catch (err) {
+        console.error("Caught error in action: ");
+        throw err
+    }
+}
+
+export async function updateLocationAPI(body) {
+    try {
+        const response = await httpRequest(apiLocation, {
+            method: 'PATCH',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(body),
+        })
+        if (response?.status >= 400) {
+            const errMessage = await response?.json()
+            console.log(errMessage)
+            throw new Error(errMessage.message || "Action: Failed Request")
+        }
+        return true
+    } catch (err) {
+        console.error("Caught error in action: ");
+        throw err
+    }
+}
+
+export async function deleteLocationAPI(id) {
+    try {
+        const response = await httpRequest(apiLocation + `/${id}`, {
+            method: 'DELETE',
+            headers: {"Content-Type": "application/json"},
+        })
+        if (response?.status >= 400) {
+            const errMessage = await response?.json()
+            console.log(errMessage)
             throw new Error(errMessage.message || "Action: Failed Request")
         }
         return true

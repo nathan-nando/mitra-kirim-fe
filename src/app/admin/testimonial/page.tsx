@@ -9,6 +9,7 @@ import Button from "@/components/ui/button/Button";
 import {toast} from "sonner";
 import {addTestimonialAPI, changeStatusAPI, deleteAPI, getTestimonialAPI} from "@/app/admin/testimonial/action";
 import {Detail} from "@/components/ui/detail/Detail";
+import ButtonIcon from "@/components/ui/button/ButtonIcon";
 
 
 type ITestimonial = {
@@ -28,6 +29,7 @@ export default function TestimonialAdm() {
     const [selectedData, setSelectedData] = useState<ITestimonial>({})
     const [loading, setLoading] = useState(false)
     const [selectedImg, setSelectedImg] = useState("");
+    const [fullscreen, setFullscreen] = useState<true | string | 'sm-down' | 'md-down' | 'lg-down' | 'xl-down' | 'xxl-down'>(true)
 
 
     //v view, a add, u update
@@ -37,7 +39,7 @@ export default function TestimonialAdm() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleView = (data: ITestimonial) => {
-        console.log(data)
+        setFullscreen("lg-down")
         setModal("v")
         setSelectedData(data)
         setSelectedImg(`testimonials/${data.img!}`)
@@ -73,6 +75,13 @@ export default function TestimonialAdm() {
         await toggleAPI(data.id!, updatedValue)
         updatedData[updatedIndex].slide = updatedValue
         setDataList(updatedData)
+    }
+
+    const toggleFullscreen = () => {
+        if (fullscreen === true)
+            setFullscreen("lg-down")
+        else
+            setFullscreen(true)
     }
 
     const onImgChange = (event) => {
@@ -205,16 +214,26 @@ export default function TestimonialAdm() {
             onDelete={handleDelete}
             onSwitchChange={handleSwitch}
         />
-        <Modal className={"modal-lg text-black-custom"} show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title className={"fw-bold"}>{modalHeader(modeModal)}</Modal.Title>
+        <Modal className={`modal-lg  text-black-custom`} fullscreen={fullscreen} show={show} onHide={handleClose}>
+            <Modal.Header >
+                <div className={"pe-3 col-12 d-flex flex-row justify-content-between"}>
+                    <Modal.Title className={"fw-bold"}>{modalHeader(modeModal)}</Modal.Title>
+                    <div className={"d-flex flex-row gap-3"}>
+                    <ButtonIcon icon={"bi-fullscreen text-black-custom"} severity={" p-0"} cb={() => {
+                        toggleFullscreen()
+                    }}/>
+                        <ButtonIcon icon={"bi-x fs-4 text-black-custom"} severity={" p-0"} cb={() => {
+                            handleClose()
+                        }}/>
+                    </div>
+                </div>
             </Modal.Header>
             <Modal.Body className={"col-12 d-flex flex-column gap-3"}>
                 {modeModal === "v" && <Detail data={selectedData}/>}
-                {selectedImg && <Image src={`/api/images/${selectedImg}`}
+                {modeModal === "v" && selectedImg && <Image src={`/api/images/${selectedImg}`}
                                        alt={"mitra kirim"}
-                                       width={400}
-                                       height={200}
+                                       width={600}
+                                       height={350}
                                        className={"shadow-sm border border-4 border-light mb-4 ms-3"}
                 />}
                 {(modeModal === "a" || modeModal === "u") && renderForm()}

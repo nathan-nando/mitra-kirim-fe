@@ -1,6 +1,6 @@
 "use server"
 
-import {apiPublic, apiSuggestion, getApi} from "@/api/api";
+import {apiPublic, getApi} from "@/api/api";
 import {httpRequest} from "@/utils/httpRequest";
 
 

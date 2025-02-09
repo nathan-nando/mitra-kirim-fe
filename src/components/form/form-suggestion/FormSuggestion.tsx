@@ -23,9 +23,9 @@ export function FormSuggestion() {
                     return
                 }
 
-                const err = await addSuggestionAPI(formData)
+                const ok = await addSuggestionAPI(formData)
                 toast.dismiss()
-                if (err) {
+                if (!ok) {
                     toast.error("Gagal mengirim kritik dan saran")
                     return
                 }

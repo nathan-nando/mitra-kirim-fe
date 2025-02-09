@@ -1,16 +1,20 @@
 "use server"
 
 
-import {apiSuggestion, getApi} from "@/api/api";
+import {apiSuggestion} from "@/api/api";
+import {httpRequest} from "@/utils/httpRequest";
 
 export async function GetAllAPI() {
     try {
-        const response = await fetch(getApi(apiSuggestion),
+        const response = await httpRequest(apiSuggestion,
             {
                 method: 'GET',
             });
-        const {data} =  await response.json();
-        return data
+        if (response.status >= 400) {
+            const errMessage = await response?.json()
+            throw new Error("Error Action: ", errMessage)
+        }
+        return response
     } catch (error) {
         console.error(error);
         throw error
