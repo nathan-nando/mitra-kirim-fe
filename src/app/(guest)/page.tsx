@@ -35,8 +35,6 @@ export default async function Home() {
     const data: IData = await getConfigurationAPI()
     const {config, location, testimonials} = data
 
-    console.log(testimonials, "ARR")
-
     let heroImg, heroDesc, whatsappNumber, appName, appDescription , appLogo = ""
     const serviceData: unknown[] = []
     const socialData: unknown[] = []
@@ -68,18 +66,10 @@ export default async function Home() {
         }
     })
 
-    // const layoutData = data?.filter(v => v.type === "LAYOUT_CONFIG")
-    // const [heroImg] = layoutData.filter(v=>v)
-    // const [servicesDataRaw] = layoutData?.filter(v => v.key === "services")
-    // const serviceData = JSON.parse(servicesDataRaw.value)
-    //
-    // const socialMediaData = data?.filter(v => v.type === "SOCIAL_MEDIA_CONFIG")
-    // const [whatsappNumber] = socialMediaData?.filter(v => v.key === 'whatsapp')
-
     return (
         <>
             <ButtonSticky whatsappNumber={whatsappNumber}/>
-            <NavbarGuest whatsappNumber={whatsappNumber} appName={appName}/>
+            <NavbarGuest whatsappNumber={whatsappNumber} appName={appName} appLogo={appLogo}/>
             <Hero img={heroImg} description={heroDesc} appDescription={appDescription}/>
             <Services data={serviceData}/>
             <Testimonial slides={testimonials}/>

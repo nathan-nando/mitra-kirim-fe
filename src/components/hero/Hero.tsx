@@ -6,8 +6,8 @@ export function Hero({img, description, appDescription ="Selamat Datang"}) {
 
     const paragraphs = withParagraphs(description)
 
-
-    const getImg = () => `/images/hero.jpg`
+    console.log(img, "img")
+    const getImg = () => `/api/images/assets/${img}`
 
     return <div className={"hero"}>
         <h5

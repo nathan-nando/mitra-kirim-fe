@@ -3,7 +3,7 @@ import Link from "next/link";
 import {ButtonWhatsapp} from "@/components/ui/button/ButtonWhatsapp";
 import Image from "next/image";
 
-export function NavbarGuest({whatsappNumber, appName="PT. Mitra Kirim Horeca"}) {
+export function NavbarGuest({whatsappNumber, appName="PT. Mitra Kirim Horeca", appLogo}) {
     return <nav className="p-0 navbar navbar-expand-lg navbar-light bg-light navbar-guest">
         <div className="container d-flex flex-row">
             <Link href={"/"} className={"navbar-brand logo-text col-lg-5"}>
@@ -14,7 +14,7 @@ export function NavbarGuest({whatsappNumber, appName="PT. Mitra Kirim Horeca"}) 
             <Link href={"/"} className={"col-10 col-lg-2"}>
                 <Image
                     className={"logo-img"}
-                    src={"/images/logo.png"} alt={"mitra kirim"}
+                    src={`/api/images/assets/${appLogo}`} alt={"mitra kirim"}
                     width={895} height={895}
                 />
             </Link>
