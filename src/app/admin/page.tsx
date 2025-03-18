@@ -15,7 +15,7 @@ export default function Admin() {
         <div className="d-flex flex-row gap-5 ">
             <DashboardCard number={20} label={"Pengunjung Hari Ini"}/>
             <DashboardCard number={2} label={"Total Saran"}/>
-            <DashboardCard number={3} label={"Total Testimoni"}/>
+            <DashboardCard number={5} label={"Total Testimoni"}/>
             <DashboardCard number={2} label={"Total Cabang"}/>
         </div>
 

@@ -29,7 +29,7 @@ export function Hero({img, description, appDescription ="Selamat Datang"}) {
                 <div className={"hero-description paragraph-justify"} style={{whiteSpace: "pre-wrap"}}
                 >
                     <div>
-                        {paragraphs.map((para, index) => (
+                        {paragraphs?.map((para, index) => (
                             <p key={index}>{para}</p>
                         ))}
                     </div>
