@@ -2,7 +2,7 @@
 
 import "./navbar-admin.css"
 import Image from "next/image";
-import {useState} from "react";
+import React, {useState} from "react";
 import Link from "next/link";
 import {NavbarAdminData, NavbarType} from "@/components/navbar/navbar-admin/NavbarAdminData";
 import {logout} from "@/app/(guest)/login/action";
@@ -63,10 +63,12 @@ export function NavbarAdmin() {
 
     return <nav className={`sidebar ${collapseState ? 'nav-collapsed' : ''}`}>
         <div className={"sidebar-header"}>
-            <Image
-                src={"/images/logo.png"} alt={"mitra kirim"}
-                width={895} height={895}
-            />
+            <Link href={"/"}>
+                <Image
+                    src={"/images/logo.png"} alt={"mitra kirim"}
+                    width={895} height={895}
+                />
+            </Link>
             <i className="bi bi-chevron-right" onClick={() => setCollapseState(!collapseState)}></i>
         </div>
         <div className={"sidebar-content"}>

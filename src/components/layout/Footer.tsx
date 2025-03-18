@@ -4,9 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import {capitalizeWords} from "@/utils/capitilize";
+import {cookies} from "next/headers";
 
 export async function Footer({socialMediaData, tokoData}) {
     const title = "PT. Mitra Kirim Horeca"
+    const cookieStore = await cookies()
+    const accessToken = cookieStore.get("X_APP_1")?.value
 
     return <div className={"footer"}>
         <div className={"d-flex flex-row text-background"}>
@@ -33,7 +36,7 @@ export async function Footer({socialMediaData, tokoData}) {
             </div>
 
             <div className="col"></div>
-            <Link href={"/login"}>Login</Link>
+            {accessToken ?  <Link href={"/admin"}>Back to Dashboard</Link>: <Link href={"/login"}>Login</Link>}
         </div>
     </div>
 }
