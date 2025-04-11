@@ -13,7 +13,7 @@ import {
     GetByTypeAPI,
     // updateServicesAPI
 } from "@/app/admin/settings/general/action";
-import { updateHeroAPI } from "@/app/admin/settings/layout/action";
+import {updateHeroAPI, updateServicesAPI} from "@/app/admin/settings/layout/action";
 
 // Types
 import { IConfiguration } from "@/app/admin/settings/model";
@@ -222,22 +222,44 @@ export default function LayoutAdm() {
         setLayoutConfig(prev => ({ ...prev, loading: true }));
         toast.loading("Processing...");
 
+        // Create an array to hold the final service objects to be saved
+        const services = serviceUploads.map((service, index) => {
+            // Start with the base service object containing title and description
+            const serviceObj = {
+                title: service.title,
+                description: service.description,
+                img: "" // Will be populated based on file or existing image
+            };
+
+            // If there's a new file, we'll use a placeholder and let the backend handle file saving
+            // The actual filename will be determined by the server
+            if (service.file) {
+                // We'll use a placeholder here - the actual value will be set by the backend
+                serviceObj.img = `temp-${index}`; // This will be replaced by the backend
+            } else if (service.preview && !service.preview.startsWith('blob:') && !service.preview.startsWith('data:')) {
+                // If using an existing image (not a blob URL), keep the existing filename
+                serviceObj.img = service.preview;
+            }
+
+            return serviceObj;
+        });
+
+        // Create FormData object for file uploads
         const formData = new FormData();
 
-        // Add service data to formData
+        // Add the stringified services JSON to formData
+        formData.append("services", JSON.stringify(services));
+
+        // Append any new files that need to be uploaded
         serviceUploads.forEach((service, index) => {
-            formData.append(`service[${index}][title]`, service.title);
-            formData.append(`service[${index}][description]`, service.description);
             if (service.file) {
-                formData.append(`service[${index}][img]`, service.file);
-            } else if (service.preview && !service.preview.startsWith('blob:') && !service.preview.startsWith('data:')) {
-                // If preview is not a blob URL (meaning it's an existing image filename), pass it along
-                formData.append(`service[${index}][imgName]`, service.preview);
+                formData.append(`serviceFile${index}`, service.file);
             }
         });
 
+
         try {
-            // await updateServicesAPI(formData);
+            await updateServicesAPI(formData);
             toast.dismiss();
             toast.success("Successfully updated services section");
             setEditingMode('isEditingService', false);

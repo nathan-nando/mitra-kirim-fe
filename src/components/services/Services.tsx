@@ -9,29 +9,14 @@ type IServices = {
 }
 
 export function Services({data}) {
-    const servicesList: IServices[] = [
-        {
-            title: "Penyediaan Bahan Berkualitas",
-            description: "Respon cepat terhadap kebutuhan mendesak, keluhan, serta ketersediaan bahan berkualitas",
-            image: "service-1.jpg",
-        },
-        {
-            title: "Pengiriman Barang Secara Cepat",
-            description: "Pengiriman tepat waktu memastikan waktu operasional bisnis anda tidak terganggu",
-            image: "service-2.jpg",
-        },
-        {
-            title: "Layanan Konsultasi HORECA",
-            description: "Solusi operasional bisnis maupun pemilihan produk.\nMembantu menemukan barang yang tepat sesuai kebutuhan dan saran profesional",
-            image: "service-2.jpg",
-        },
-    ]
+    console.log(data, 'data')
 
     const card = () => {
-        return servicesList.map((service, index) => {
+        return data?.map((service, index) => {
+            console.log(service, "img")
             return <div className={"bg-white-custom services-card"} key={index}>
                 <Image
-                    src={`/images/${service.image}`}
+                    src={`/api/images/assets/${service.img}`}
                     alt={""} width={500} height={500}
                     className={"service-image"}
                 />

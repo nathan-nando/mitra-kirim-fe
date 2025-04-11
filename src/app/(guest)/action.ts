@@ -38,7 +38,7 @@ export const getConfigurationAPI = async () => {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: jsonBody,
-            // next: {revalidate: 3600}
+            // next: {revalidate: 10}
         })
         return data
     } catch (err) {

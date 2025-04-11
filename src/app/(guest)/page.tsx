@@ -36,9 +36,9 @@ export default async function Home() {
     const {config, location, testimonials} = data
 
     let heroImg, heroDesc, whatsappNumber, appName, appDescription , appLogo = ""
-    const serviceData: unknown[] = []
-    const socialData: unknown[] = []
-    const tokoData: unknown[] = []
+    const serviceData: any[] = []
+    const socialData: any[] = []
+    const tokoData: any[] = []
 
 
     config?.map(({key, type, value}) => {
@@ -55,8 +55,8 @@ export default async function Home() {
         else if (key === "heroDesc") {
             heroDesc = value
         } else if (key === "services") {
-            const parsed: unknown[] = JSON.parse(value)
-            serviceData.push(parsed)
+            const parsed: any[] = JSON.parse(value)
+            serviceData.push(...parsed)
         } else if (key === "whatsapp") {
             whatsappNumber = value
         } else if (type === "SOCIAL_MEDIA_CONFIG") {

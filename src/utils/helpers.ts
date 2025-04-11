@@ -1,6 +1,6 @@
 export const withParagraphs = (str: string) => {
     if(!str)
-        return ""
+        return []
     return str
         .trim()
         .split("\\n")
