@@ -17,21 +17,13 @@ export const loginAPI = async (formData: FormData) => {
             throw new Error(errMessage.message || "Action: Failed Request")
         }
 
-        const {token, refreshToken} = response
+        const {token} = response
 
-        if (!token || !refreshToken) {
+        if (!token) {
             throw new Error("Action: Token is empty")
         }
         const cookie = await cookies()
         cookie.set('X_APP_1', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            path: "/",
-        })
-
-
-        cookie.set('X_APP_2', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
@@ -44,51 +36,51 @@ export const loginAPI = async (formData: FormData) => {
 }
 
 export const refreshAPI = async () => {
-    const cookieStore =await  cookies();
-    const refreshToken = cookieStore.get("X_APP_2")?.value;
-
-    if (!refreshToken) {
-        throw new Error("No refresh token available");
-    }
-
-    try {
-        const response = await fetch(getApi(apiAuth + "/refresh"), {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ refreshToken })
-        });
-
-        if (!response.ok) {
-            throw new Error("Refresh failed");
-        }
-
-        const data = await response.json();
-        const { accessToken } = data;
-
-        if (!accessToken) {
-            throw new Error("No access token in refresh response");
-        }
-
-        cookieStore.set('X_APP_1', accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            path: '/',
-        });
-
-        return { success: true };
-    } catch (error) {
-        console.error("Refresh error:", error);
-        await logout();
-        throw error;
-    }
+    // const cookieStore =await  cookies();
+    // const refreshToken = cookieStore.get("X_APP_2")?.value;
+    //
+    // if (!refreshToken) {
+    //     throw new Error("No refresh token available");
+    // }
+    //
+    // try {
+    //     const response = await fetch(getApi(apiAuth + "/refresh"), {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: JSON.stringify({ refreshToken })
+    //     });
+    //
+    //     if (!response.ok) {
+    //         throw new Error("Refresh failed");
+    //     }
+    //
+    //     const data = await response.json();
+    //     const { accessToken } = data;
+    //
+    //     if (!accessToken) {
+    //         throw new Error("No access token in refresh response");
+    //     }
+    //
+    //     cookieStore.set('X_APP_1', accessToken, {
+    //         httpOnly: true,
+    //         secure: process.env.NODE_ENV === 'production',
+    //         sameSite: 'lax',
+    //         path: '/',
+    //     });
+    //
+    //     return { success: true };
+    // } catch (error) {
+    //     console.error("Refresh error:", error);
+    //     await logout();
+    //     throw error;
+    // }
 }
 
 export async function logout() {
     const cookie = await cookies()
     cookie.delete("X_APP_1")
-    cookie.delete("X_APP_2")
+    // cookie.delete("X_APP_2")
     redirect('/login')
 }

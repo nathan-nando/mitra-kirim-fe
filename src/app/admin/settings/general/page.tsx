@@ -1,368 +1,397 @@
 "use client"
 import "./general.css"
-
-import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
-import {useCallback, useEffect, useState} from "react";
-import {IConfiguration} from "@/app/admin/settings/model";
-import HorizontalLineLoading from "@/components/ui/loading/Horizontal";
-import {
-    GetByTypeAPI,
-    updateAppAPI,
-    updateAppLogoAPI,
-    updateSocialAPI,
-    updateTokoAPI
-} from "@/app/admin/settings/general/action";
-import ButtonIcon from "@/components/ui/button/ButtonIcon";
-import {toast} from "sonner";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import Image from "next/image";
 
+// Components
+import { Breadcrumb } from "@/components/ui/breadcrumb/breadcrumb";
+import HorizontalLineLoading from "@/components/ui/loading/Horizontal";
+import ButtonIcon from "@/components/ui/button/ButtonIcon";
 
+// API
+import {
+    GetByTypeAPI,
+    updateAppLogoAPI,
+    updateConfigurationAPI
+} from "@/app/admin/settings/general/action";
+
+// Form Components
+const FormSection = ({ title, isEditing, setIsEditing, onSubmit, onCancel, children, id }) => {
+    return (
+        <form id={id} className="text-black-custom mx-auto col-12 mt-4">
+            <div className="d-flex flex-row justify-content-between">
+                <small className="fw-bold text-foreground">{title}</small>
+                <div className="d-flex flex-row gap-3">
+                    {isEditing && (
+                        <ButtonIcon severity="danger" icon="bi-x" cb={onCancel} />
+                    )}
+                    {isEditing && (
+                        <ButtonIcon severity="primary" icon="bi-check" cb={onSubmit} />
+                    )}
+                    {!isEditing && (
+                        <ButtonIcon severity="primary" icon="bi-pen" cb={() => setIsEditing(true)} />
+                    )}
+                </div>
+            </div>
+            <fieldset disabled={!isEditing} className="col mt-1">
+                {children}
+            </fieldset>
+        </form>
+    );
+};
+
+// Main Component
 export default function GeneralAdm() {
+    // State declarations
+    const [configurations, setConfigurations] = useState({
+        loading: true,
+        data: [],
+        selectedLogo: ""
+    });
 
-    const [dataList, setDataList] = useState<IConfiguration[]>([])
-    const [loading, setLoading] = useState(false)
-    const [selectedLogo, setSelectedLogo] = useState<string>("")
+    // New state for image preview
+    const [imagePreview, setImagePreview] = useState("");
 
-    const [isEditingLogo, setIsEditingLogo] = useState<boolean>(false)
-    const [isEditingAppForm, setIsEditingAppForm] = useState<boolean>(false)
-    const [isEditingSocialForm, setIsEditingSocialForm] = useState<boolean>(false)
-    const [isEditingTokoForm, setIsEditingTokoForm] = useState<boolean>(false)
+    const [formStates, setFormStates] = useState({
+        isEditingLogo: false,
+        isEditingAppForm: false,
+        isEditingSocialForm: false,
+        isEditingTokoForm: false
+    });
 
+    // Fetch data from API
+    const fetchConfigurations = useCallback(async () => {
+        const listTypes = [
+            "APPLICATION_CONFIG",
+            "SOCIAL_MEDIA_CONFIG",
+            "ONLINE_SHOP_CONFIG",
+        ];
+
+        setConfigurations(prev => ({ ...prev, loading: true }));
+
+        try {
+            const data = await GetByTypeAPI(listTypes);
+            setConfigurations({
+                loading: false,
+                data,
+                selectedLogo: data.find(config => config.formType === 'file')?.value || ""
+            });
+        } catch (err) {
+            console.error("Failed to fetch configurations:", err);
+            setConfigurations(prev => ({ ...prev, loading: false }));
+            toast.error("Failed to load settings");
+        }
+    }, []);
+
+    // Fill forms with existing data
     const autoFillForm = useCallback(() => {
-        dataList?.map(config => {
-            const elements = document.getElementsByName(config.key!);
+        configurations.data.forEach((config: any) => {
+            const elements = document.getElementsByName(config.key);
 
             if (elements.length > 0) {
                 const element = elements[0] as HTMLInputElement | HTMLTextAreaElement;
                 if (config.formType === 'file') {
-                    setSelectedLogo(config.value!)
+                    setConfigurations(prev => ({ ...prev, selectedLogo: config.value || "" }));
                 } else {
-                    element.value = config.value!;
+                    element.value = config.value || "";
                 }
             }
         });
-    }, [dataList])
+    }, [configurations.data]);
 
-    const getAPI = () => {
-        const listTypes: string[] = [
-            "APPLICATION_CONFIG",
-            "SOCIAL_MEDIA_CONFIG",
-            "ONLINE_SHOP_CONFIG",
-        ]
-        setLoading(true)
-        GetByTypeAPI(listTypes)
-            .then((v => {
-                console.log(v)
-                setLoading(false)
-                setDataList(v)
-            }))
-            .catch((err) => {
-                console.log(err)
-                setLoading(false)
-            })
-    }
+    // Set editing mode for a specific form
+    const setEditingMode = (formName, value) => {
+        setFormStates(prev => ({
+            ...prev,
+            [formName]: value
+        }));
+
+        // Clear image preview when exiting edit mode
+        if (formName === 'isEditingLogo' && !value) {
+            setImagePreview("");
+        }
+    };
+
+    // Handle image selection
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Create a preview URL for the selected image
+            const objectUrl = URL.createObjectURL(file);
+            setImagePreview(objectUrl);
+        }
+    };
+
+    // Generic form submission handler
+    const handleSubmitForm = async (formId, formStateName, successMessage) => {
+        setConfigurations(prev => ({ ...prev, loading: true }));
+        toast.loading("Processing...");
+
+        const form = document.getElementById(formId) as HTMLFormElement;
+        const formData = new FormData(form);
+
+        // For logo form, handle differently
+        if (formId === 'logoForm') {
+            if (!formData.get("appLogo")) {
+                toast.dismiss();
+                toast.info("Please select an image");
+                setConfigurations(prev => ({ ...prev, loading: false }));
+                return;
+            }
+
+            try {
+                await updateAppLogoAPI(formData);
+                toast.dismiss();
+                toast.success(successMessage);
+                setEditingMode(formStateName, false);
+                // Clear image preview after successful upload
+                setImagePreview("");
+                await fetchConfigurations();
+            } catch (err:any) {
+                toast.dismiss();
+                toast.error(err.message || "Failed to update");
+                setConfigurations(prev => ({ ...prev, loading: false }));
+            }
+            return;
+        }
+
+        // For regular configuration forms
+        const formValues = {};
+        let isValid = true;
+
+        formData.forEach((value, key) => {
+            if (!value) isValid = false;
+            formValues[key] = value;
+        });
+
+        if (!isValid) {
+            toast.dismiss();
+            toast.info("Please complete all fields");
+            setConfigurations(prev => ({ ...prev, loading: false }));
+            return;
+        }
+
+        try {
+            await updateConfigurationAPI(formValues);
+            toast.dismiss();
+            toast.success(successMessage);
+            setEditingMode(formStateName, false);
+            await fetchConfigurations();
+        } catch (err:any) {
+            toast.dismiss();
+            toast.error(err.message || "Failed to update");
+            setConfigurations(prev => ({ ...prev, loading: false }));
+        }
+    };
+
+    // Cancel edit and reset form
+    const handleCancelEdit = (formName) => {
+        setEditingMode(formName, false);
+        // Clear image preview on cancel for logo form
+        if (formName === 'isEditingLogo') {
+            setImagePreview("");
+        }
+        autoFillForm();
+    };
+
+    // Cleanup function to revoke object URLs when component unmounts or when preview changes
+    useEffect(() => {
+        return () => {
+            if (imagePreview) {
+                URL.revokeObjectURL(imagePreview);
+            }
+        };
+    }, [imagePreview]);
+
+    // Effects
+    useEffect(() => {
+        fetchConfigurations();
+    }, [fetchConfigurations]);
 
     useEffect(() => {
-        getAPI()
-    }, [])
-
-
-
-    useEffect(() => {
-        autoFillForm()
-    }, [autoFillForm]);
-
-    const onSubmitApp = () => {
-        setLoading(true)
-        toast.loading("Sedang proses ....")
-
-        const form = document.getElementById('appForm') as HTMLFormElement;
-        const formData = new FormData(form);
-        const formValues: { [key: string]: string | File } = {};
-
-        let isValid = true
-        formData.forEach((value, key) => {
-            if (!formData.get(key))
-                isValid = false
-            formValues[key] = value;
-        });
-        if (!isValid) {
-            toast.info("Lengkapi form")
-            return
+        if (configurations.data.length > 0) {
+            autoFillForm();
         }
+    }, [configurations.data, autoFillForm]);
 
-        console.log(formValues)
-        updateAppAPI(formValues)
-            .then(() => {
-                toast.dismiss()
-                toast.success("Sukses merubah informasi aplikasi")
-                getAPI()
-            })
-            .catch((err) => {
-                toast.dismiss()
-                toast.error(err.message || "Gagal merubah informasi aplikasi")
-                setLoading(false)
-            })
-    }
+    return (
+        <>
+            <Breadcrumb items={["Settings", "General"]} />
+            {configurations.loading && <HorizontalLineLoading />}
 
-    const onSubmitAppLogo = () => {
-        setLoading(true)
-        toast.loading("Sedang proses ....")
-
-        const form = document.getElementById('logoForm') as HTMLFormElement;
-        const formData = new FormData(form);
-        if (!formData.get("appLogo")) {
-            toast.info("Silahkan pilih gambar")
-            return
-        }
-
-        updateAppLogoAPI(formData)
-            .then(() => {
-                toast.dismiss()
-                toast.success("Sukses merubah logo aplikasi")
-                getAPI()
-            })
-            .catch((err) => {
-                toast.dismiss()
-                toast.error(err.message || "Gagal merubah logo aplikasi")
-                setLoading(false)
-            })
-    }
-
-    const onSubmitSocial = () => {
-        setLoading(true)
-        toast.loading("Sedang proses ....")
-
-        const form = document.getElementById('socialForm') as HTMLFormElement;
-        const formData = new FormData(form);
-        const formValues: { [key: string]: string | File } = {};
-
-        let isValid = true
-        formData.forEach((value, key) => {
-            if (!formData.get(key))
-                isValid = false
-            formValues[key] = value;
-        });
-        if (!isValid) {
-            toast.info("Lengkapi form")
-            return
-        }
-
-        console.log(formValues)
-        updateSocialAPI(formValues)
-            .then(() => {
-                toast.dismiss()
-                toast.success("Sukses merubah informasi aplikasi")
-                getAPI()
-            })
-            .catch((err) => {
-                toast.dismiss()
-                toast.error(err.message || "Gagal merubah informasi aplikasi")
-                setLoading(false)
-            })
-    }
-
-    const onSubmitToko = () => {
-        setLoading(true)
-        toast.loading("Sedang proses ....")
-
-        const form = document.getElementById('tokoForm') as HTMLFormElement;
-        const formData = new FormData(form);
-        const formValues: { [key: string]: string | File } = {};
-
-        let isValid = true
-        formData.forEach((value, key) => {
-            if (!formData.get(key))
-                isValid = false
-            formValues[key] = value;
-        });
-        if (!isValid) {
-            toast.info("Lengkapi form")
-            return
-        }
-
-        console.log(formValues)
-        updateTokoAPI(formValues)
-            .then(() => {
-                toast.dismiss()
-                toast.success("Sukses merubah informasi aplikasi")
-                getAPI()
-            })
-            .catch((err) => {
-                toast.dismiss()
-                toast.error(err.message || "Gagal merubah informasi aplikasi")
-                setLoading(false)
-            })
-    }
-
-
-    return <>
-        <Breadcrumb items={["Settings", "General"]}/>
-        {loading && <HorizontalLineLoading/>}
-        <div className={"d-flex flex-column gap-5"}>
-            <div className="row">
-                <form id={"appForm"} className={"text-black-custom mx-auto col-5"}>
-                    <div className="d-flex flex-row justify-content-between">
-                        <small className={"fw-bold text-foreground"}>Aplikasi</small>
-                        <div className={"d-flex flex-row gap-3"}>
-                            {isEditingAppForm &&
-                                <ButtonIcon severity={"danger"} icon={"bi-x"} cb={() => {
-                                    setIsEditingAppForm(false)
-                                    autoFillForm()
-                                }}/>}
-                            {isEditingAppForm && < ButtonIcon severity={"primary"} icon={"bi-check"} cb={() => {
-                                setIsEditingAppForm(!isEditingAppForm)
-                                onSubmitApp()
-                            }}/>}
-
-                            {!isEditingAppForm && < ButtonIcon severity={"primary"} icon={"bi-pen"} cb={() => {
-                                setIsEditingAppForm(!isEditingAppForm)
-                            }}/>}
-
-
-                        </div>
-                    </div>
-                    <fieldset disabled={!isEditingAppForm} className={"col mt-1"}>
-                        <div className={"d-flex flex-column gap-4"}>
-                            <div className={"d-flex flex-column gap-2 bi-"}>
-                                <label>Nama</label>
-                                <input name={"appName"} type="text" className={"form-control"}/>
+            <div className="d-flex flex-column gap-5">
+                {/* App Info and Logo Section */}
+                <div className="row">
+                    {/* Application Form */}
+                    <form id="appForm" className="text-black-custom mx-auto col-5">
+                        <div className="d-flex flex-row justify-content-between">
+                            <small className="fw-bold text-foreground">Application</small>
+                            <div className="d-flex flex-row gap-3">
+                                {formStates.isEditingAppForm && (
+                                    <ButtonIcon
+                                        severity="danger"
+                                        icon="bi-x"
+                                        cb={() => handleCancelEdit('isEditingAppForm')}
+                                    />
+                                )}
+                                {formStates.isEditingAppForm && (
+                                    <ButtonIcon
+                                        severity="primary"
+                                        icon="bi-check"
+                                        cb={() => handleSubmitForm('appForm', 'isEditingAppForm', 'Sukses mengubah informasi aplikasi')}
+                                    />
+                                )}
+                                {!formStates.isEditingAppForm && (
+                                    <ButtonIcon
+                                        severity="primary"
+                                        icon="bi-pen"
+                                        cb={() => setEditingMode('isEditingAppForm', true)}
+                                    />
+                                )}
                             </div>
+                        </div>
 
-                            <div className={"d-flex flex-column gap-2"}>
-                                <label>Deskripsi Singkat</label>
-                                <textarea name={"appDescription"} className={"form-control"}></textarea>
+                        <fieldset disabled={!formStates.isEditingAppForm} className="col mt-1">
+                            <div className="d-flex flex-column gap-4">
+                                <div className="d-flex flex-column gap-2">
+                                    <label>Name</label>
+                                    <input name="appName" type="text" className="form-control" />
+                                </div>
+                                <div className="d-flex flex-column gap-2">
+                                    <label>Short Description</label>
+                                    <textarea name="appDescription" className="form-control"></textarea>
+                                </div>
                             </div>
+                        </fieldset>
+                    </form>
 
-                        </div>
-                    </fieldset>
-                </form>
-                <form id={"logoForm"} className={"col"}>
-                    <div className="d-flex flex-row justify-content-end">
-                        <div className={"d-flex flex-row gap-3"}>
-                            {isEditingLogo &&
-                                <ButtonIcon severity={"danger"} icon={"bi-x"} cb={() => {
-                                    setIsEditingLogo(false)
-                                    autoFillForm()
-                                }}/>}
-                            {isEditingLogo && < ButtonIcon severity={"primary"} icon={"bi-check"} cb={() => {
-                                setIsEditingLogo(!isEditingLogo)
-                                onSubmitAppLogo()
-                            }}/>}
-
-                            {!isEditingLogo && < ButtonIcon severity={"primary"} icon={"bi-pen"} cb={() => {
-                                setIsEditingLogo(!isEditingLogo)
-                            }}/>}
-
-
-                        </div>
-                    </div>
-                    <div className={"d-flex flex-column justify-content-center align-items-center "}>
-                        <div className="col">
-                            {selectedLogo && <Image src={`/api/images/assets/${selectedLogo}`}
-                                                    alt={"mitra kirim"}
-                                                    width={100}
-                                                    height={100}
-                                                    className={"logo-app shadow-sm border border-4 border-light"}
-                            />}
+                    {/* Logo Form */}
+                    <form id="logoForm" className="col">
+                        <div className="d-flex flex-row justify-content-end">
+                            <div className="d-flex flex-row gap-3">
+                                {formStates.isEditingLogo && (
+                                    <ButtonIcon
+                                        severity="danger"
+                                        icon="bi-x"
+                                        cb={() => handleCancelEdit('isEditingLogo')}
+                                    />
+                                )}
+                                {formStates.isEditingLogo && (
+                                    <ButtonIcon
+                                        severity="primary"
+                                        icon="bi-check"
+                                        cb={() => handleSubmitForm('logoForm', 'isEditingLogo', 'Sukses mengubah logo aplikasi')}
+                                    />
+                                )}
+                                {!formStates.isEditingLogo && (
+                                    <ButtonIcon
+                                        severity="primary"
+                                        icon="bi-pen"
+                                        cb={() => setEditingMode('isEditingLogo', true)}
+                                    />
+                                )}
+                            </div>
                         </div>
 
-                        <div className={`col d-flex flex-column gap-2 ${!isEditingLogo && 'visually-hidden'}`}>
-                            <label>Logo</label>
-                            <input name={"appLogo"} accept="image/*" type="file" className={"form-control"}/>
+                        <div className="d-flex flex-column justify-content-center align-items-center">
+                            <div className="col">
+                                {formStates.isEditingLogo && imagePreview ? (
+                                    // Show preview of the selected image when in edit mode
+                                    <Image
+                                        src={imagePreview}
+                                        alt="logo preview"
+                                        width={100}
+                                        height={100}
+                                        className="logo-app shadow-sm border border-4 border-light"
+                                    />
+                                ) : configurations.selectedLogo ? (
+                                    // Show the current logo when not editing or no new image selected
+                                    <Image
+                                        src={`/api/images/assets/${configurations.selectedLogo}`}
+                                        alt="mitra kirim"
+                                        width={100}
+                                        height={100}
+                                        className="logo-app shadow-sm border border-4 border-light"
+                                    />
+                                ) : null}
+                            </div>
+                            <div className={`col d-flex flex-column gap-2 ${!formStates.isEditingLogo && 'visually-hidden'}`}>
+                                <label>Logo</label>
+                                <input
+                                    name="appLogo"
+                                    accept="image/*"
+                                    type="file"
+                                    className="form-control"
+                                    onChange={handleImageChange}
+                                />
+                            </div>
                         </div>
-                    </div>
-                </form>
-            </div>
-
-
-            <form id={"socialForm"} className={"text-black-custom mx-auto col-12  mt-4"}>
-                <div className="d-flex flex-row justify-content-between">
-                    <small className={"fw-bold text-foreground"}>Sosial Media</small>
-                    <div className={"d-flex flex-row gap-3"}>
-                        {isEditingSocialForm &&
-                            <ButtonIcon severity={"danger"} icon={"bi-x"} cb={() => {
-                                setIsEditingSocialForm(false)
-                                autoFillForm()
-                            }}/>}
-                        {isEditingSocialForm && < ButtonIcon severity={"primary"} icon={"bi-check"} cb={() => {
-                            setIsEditingSocialForm(!isEditingSocialForm)
-                            onSubmitSocial()
-                        }}/>}
-
-                        {!isEditingSocialForm && < ButtonIcon severity={"primary"} icon={"bi-pen"} cb={() => {
-                            setIsEditingSocialForm(!isEditingSocialForm)
-                        }}/>}
-
-                    </div>
+                    </form>
                 </div>
-                <fieldset disabled={!isEditingSocialForm} className={"col mt-1"}>
-                    <div className={"row gap-4"}>
-                        <div className={"col-5 d-flex flex-column gap-2"}>
-                            <label><span className={"bi bi-whatsapp"}></span> Whatsapp utama</label>
-                            <input type="text" className={"form-control"} name={"whatsapp"}/>
+
+                {/* Social Media Section */}
+                <FormSection
+                    id="socialForm"
+                    title="Social Media"
+                    isEditing={formStates.isEditingSocialForm}
+                    setIsEditing={(value) => setEditingMode('isEditingSocialForm', value)}
+                    onSubmit={() => handleSubmitForm('socialForm', 'isEditingSocialForm', 'Sukses mengubah informasi social media')}
+                    onCancel={() => handleCancelEdit('isEditingSocialForm')}
+                >
+                    <div className="row gap-4">
+                        <div className="col-5 d-flex flex-column gap-2">
+                            <label><span className="bi bi-whatsapp"></span> Main WhatsApp</label>
+                            <input type="text" className="form-control" name="whatsapp" />
                         </div>
-                        <div className={"col-5 d-flex flex-column gap-2"}>
-                            <label><span className={"bi bi-instagram"}></span> Instagram</label>
-                            <input type="text" className={"form-control"} name={"instagram"}/>
+                        <div className="col-5 d-flex flex-column gap-2">
+                            <label><span className="bi bi-instagram"></span> Instagram</label>
+                            <input type="text" className="form-control" name="instagram" />
                         </div>
-                        <div className={"col-5 d-flex flex-column gap-2"}>
-                            <label><span className={"bi bi-tiktok"}></span> Tiktok</label>
-                            <input type="text" className={"form-control"} name={"tiktok"}/>
+                        <div className="col-5 d-flex flex-column gap-2">
+                            <label><span className="bi bi-tiktok"></span> TikTok</label>
+                            <input type="text" className="form-control" name="tiktok" />
                         </div>
-                        <div className={"col-5 d-flex flex-column gap-2"}>
-                            <label><span className={"bi bi-facebook "}></span> Facebook</label>
-                            <input type="text" className={"form-control"} name={"facebook"}/>
+                        <div className="col-5 d-flex flex-column gap-2">
+                            <label><span className="bi bi-facebook"></span> Facebook</label>
+                            <input type="text" className="form-control" name="facebook" />
                         </div>
                     </div>
-                </fieldset>
-            </form>
+                </FormSection>
 
-            <form id={"tokoForm"} className={"text-black-custom mx-auto col-12  mt-4 mb-5"}>
-                <div className="d-flex flex-row justify-content-between">
-                    <small className={"fw-bold text-foreground"}>Toko Online</small>
-                    <div className={"d-flex flex-row gap-3"}>
-                        {isEditingTokoForm &&
-                            <ButtonIcon severity={"danger"} icon={"bi-x"} cb={() => {
-                                setIsEditingTokoForm(false)
-                                autoFillForm()
-                            }}/>}
-                        {isEditingTokoForm && < ButtonIcon severity={"primary"} icon={"bi-check"} cb={() => {
-                            setIsEditingTokoForm(!isEditingTokoForm)
-                            onSubmitToko()
-                        }}/>}
-
-                        {!isEditingTokoForm && < ButtonIcon severity={"primary"} icon={"bi-pen"} cb={() => {
-                            setIsEditingTokoForm(!isEditingTokoForm)
-                        }}/>}
-
-                    </div>
-                </div>
-                <fieldset disabled={!isEditingTokoForm} className={"col mt-1"}>
-                    <div className={"row gap-4"}>
-                        <div className={"col-5 d-flex flex-column gap-2"}>
+                {/* Online Shop Section */}
+                <FormSection
+                    id="tokoForm"
+                    title="Online Shop"
+                    isEditing={formStates.isEditingTokoForm}
+                    setIsEditing={(value) => setEditingMode('isEditingTokoForm', value)}
+                    onSubmit={() => handleSubmitForm('tokoForm', 'isEditingTokoForm', 'Sukses mengubah informasi toko')}
+                    onCancel={() => handleCancelEdit('isEditingTokoForm')}
+                >
+                    <div className="row gap-4">
+                        <div className="col-5 d-flex flex-column gap-2">
                             <label>Tokopedia</label>
-                            <input type="text" className={"form-control"} name={"tokopedia"}/>
+                            <input type="text" className="form-control" name="tokopedia" />
                         </div>
-                        <div className={"col-5 d-flex flex-column gap-2"}>
+                        <div className="col-5 d-flex flex-column gap-2">
                             <label>Shopee</label>
-                            <input type="text" className={"form-control"} name={"shopee"}/>
+                            <input type="text" className="form-control" name="shopee" />
                         </div>
-                        <div className={"col-5 d-flex flex-column gap-2"}>
+                        <div className="col-5 d-flex flex-column gap-2">
                             <label>Blibli</label>
-                            <input type="text" className={"form-control"} name={"blibli"}/>
+                            <input type="text" className="form-control" name="blibli" />
                         </div>
-                        <div className={"col-5 d-flex flex-column gap-2"}>
+                        <div className="col-5 d-flex flex-column gap-2">
                             <label>Lazada</label>
-                            <input type="text" className={"form-control"} name={"lazada"}/>
+                            <input type="text" className="form-control" name="lazada" />
                         </div>
-                        <div className={"col-5 d-flex flex-column gap-2"}>
+                        <div className="col-5 d-flex flex-column gap-2">
                             <label>Bukalapak</label>
-                            <input type="text" className={"form-control"} name={"bukalapak"}/>
+                            <input type="text" className="form-control" name="bukalapak" />
                         </div>
                     </div>
-                </fieldset>
-            </form>
-        </div>
-    </>
+                </FormSection>
+            </div>
+        </>
+    );
 }

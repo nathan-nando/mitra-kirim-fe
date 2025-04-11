@@ -1,6 +1,6 @@
 "use server"
 
-import {apiConfiguration, apiLocation} from "@/api/api";
+import {apiLocation} from "@/api/api";
 import {httpRequest} from "@/utils/httpRequest";
 
 export async function GetAllAPI() {

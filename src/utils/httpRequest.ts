@@ -1,17 +1,19 @@
+"use server"
+
 import {getApi} from "@/api/api";
 import {NextResponse} from "next/server";
 import {cookies} from "next/headers";
-import {refreshAPI} from "@/app/(guest)/login/action";
+import {logout, refreshAPI} from "@/app/(guest)/login/action";
 
 export async function httpRequest(endpoint: string, params: RequestInit) {
     try {
         const cookieStore = await cookies()
         const accessToken = cookieStore.get("X_APP_1")?.value
 
-        if (accessToken && isTokenExpired(accessToken)) {
-            console.log("TOKEN EXPIRED TRY TO REFRESH")
-            await refreshAPI()
-            console.log("REFRESH OK")
+        if (accessToken && await isTokenExpired(accessToken)) {
+            console.log("TOKEN EXPIRED LOGOUT")
+            await logout()
+            // console.log("REFRESH OK")
         }
 
         if (!params.headers) {
@@ -41,7 +43,7 @@ export async function httpRequest(endpoint: string, params: RequestInit) {
     }
 }
 
-export const isTokenExpired = (token: string) => {
+export const isTokenExpired = async(token: string) => {
     if (!token) return true;
     const payload = JSON.parse(atob(token.split('.')[1])); // Decode token payload
     return payload.exp * 1000 < Date.now(); // Check expiration

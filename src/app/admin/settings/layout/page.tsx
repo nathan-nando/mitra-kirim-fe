@@ -1,157 +1,405 @@
 "use client";
 
-import {useState} from "react";
-import {Breadcrumb} from "@/components/ui/breadcrumb/breadcrumb";
-import {IConfiguration} from "@/app/admin/settings/model";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
+
+// Components
+import { Breadcrumb } from "@/components/ui/breadcrumb/breadcrumb";
 import ButtonIcon from "@/components/ui/button/ButtonIcon";
+import HorizontalLineLoading from "@/components/ui/loading/Horizontal";
+
+// API
+import {
+    GetByTypeAPI,
+    // updateServicesAPI
+} from "@/app/admin/settings/general/action";
+import { updateHeroAPI } from "@/app/admin/settings/layout/action";
+
+// Types
+import { IConfiguration } from "@/app/admin/settings/model";
+
+// Form Section Component
+const FormSection = ({ title, isEditing, setIsEditing, onSubmit, onCancel, children }) => {
+    return (
+        <div>
+            <div className="d-flex flex-row justify-content-between">
+                <h5 className="fw-bold text-foreground">{title}</h5>
+                <div className="d-flex flex-row gap-3">
+                    {isEditing && (
+                        <ButtonIcon
+                            severity="danger"
+                            icon="bi-x"
+                            cb={onCancel}
+                        />
+                    )}
+                    {isEditing && (
+                        <ButtonIcon
+                            severity="primary"
+                            icon="bi-check"
+                            cb={onSubmit}
+                        />
+                    )}
+                    {!isEditing && (
+                        <ButtonIcon
+                            severity="primary"
+                            icon="bi-pen"
+                            cb={() => setIsEditing(true)}
+                        />
+                    )}
+                </div>
+            </div>
+            {children}
+        </div>
+    );
+};
 
 export default function LayoutAdm() {
-    const [dataList, setDataList] = useState<IConfiguration[]>([])
-    const [loading, setLoading] = useState(false)
-    const [selectedLogo, setSelectedLogo] = useState<string>("")
+    // State for configuration data
+    const [layoutConfig, setLayoutConfig] = useState({
+        loading: true,
+        data: [],
+        heroDesc: "",
+        heroImg: "",
+        services: []
+    });
 
-    const [isEditingHero, setEditingHero] = useState<boolean>(false)
-    const [isEditingService, setIsEditingService] = useState<boolean>(false)
+    // Form editing states
+    const [formStates, setFormStates] = useState({
+        isEditingHero: false,
+        isEditingService: false
+    });
 
+    // Client-side rendering state
+    const [isMounted, setIsMounted] = useState(false);
 
-    const [heroImage, setHeroImage] = useState(null);
-    const [heroImageUrl, setHeroImageUrl] = useState("");
+    // Hero form state
+    const [heroForm, setHeroForm] = useState({
+        heroDesc: "",
+        file: null,
+        preview: ""
+    });
 
-    const [serviceImages, setServiceImages] = useState([
-        {title: "", description: "", image: null, imageUrl: ""},
-        {title: "", description: "", image: null, imageUrl: ""},
-        {title: "", description: "", image: null, imageUrl: ""}
+    // Service uploads state - modified to store just the image filename without the full path
+    const [serviceUploads, setServiceUploads] = useState([
+        { title: "", description: "", file: null, preview: "" },
+        { title: "", description: "", file: null, preview: "" },
+        { title: "", description: "", file: null, preview: "" }
     ]);
 
+    const setEditingMode = (formName, value) => {
+        setFormStates(prev => ({
+            ...prev,
+            [formName]: value
+        }));
+    };
+
+    const fetchLayoutConfiguration = useCallback(async () => {
+        if (!isMounted) return; // Skip fetch during SSR
+
+        const listTypes = ["LAYOUT_CONFIG"];
+
+        setLayoutConfig(prev => ({ ...prev, loading: true }));
+
+        try {
+            const data = await GetByTypeAPI(listTypes);
+
+            // Process the API response
+            const heroDesc = data.find(item => item.key === "heroDesc")?.value || "";
+            const heroImg = data.find(item => item.key === "heroImg")?.value || "";
+
+            // Parse the services JSON string into an object
+            const servicesData = data.find(item => item.key === "services")?.value || "[]";
+            const services = JSON.parse(servicesData) || [];
+
+            setLayoutConfig({
+                loading: false,
+                data,
+                heroDesc,
+                heroImg,
+                services
+            });
+
+            // Set hero form state from API data - only store the filename
+            setHeroForm({
+                heroDesc,
+                file: null,
+                preview: heroImg // Store just the filename
+            });
+
+            // Initialize service uploads with data from API - only store the filename
+            if (services.length > 0) {
+                setServiceUploads(services.map(service => ({
+                    title: service.title || "",
+                    description: service.description || "",
+                    file: null,
+                    preview: service.img || "" // Store just the filename
+                })));
+            }
+
+        } catch (err) {
+            console.error("Failed to fetch layout configuration:", err);
+            if (isMounted) {
+                toast.error("Failed to load layout settings");
+            }
+            setLayoutConfig(prev => ({ ...prev, loading: false }));
+        }
+    }, [isMounted]);
+
+    const handleHeroDescChange = (e) => {
+        setHeroForm(prev => ({
+            ...prev,
+            heroDesc: e.target.value
+        }));
+    };
+
     const handleHeroImageChange = (e) => {
-        setHeroImage(e.target.files[0]);
-        setHeroImageUrl(URL.createObjectURL(e.target.files[0]));
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setHeroForm(prev => ({
+                ...prev,
+                file,
+                preview: URL.createObjectURL(file) // For new file uploads, we use URL.createObjectURL
+            }));
+        }
     };
 
     const handleServiceChange = (index, field) => (e) => {
-        const newServices = [...serviceImages];
+        const newServices = [...serviceUploads];
         newServices[index][field] = e.target.value;
-        setServiceImages(newServices);
+        setServiceUploads(newServices);
     };
 
     const handleServiceImageChange = (index) => (e) => {
-        const newServices = [...serviceImages];
-        newServices[index].image = e.target.files[0];
-        newServices[index].imageUrl = URL.createObjectURL(e.target.files[0]);
-        setServiceImages(newServices);
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            const newServices = [...serviceUploads];
+            newServices[index].file = file;
+            newServices[index].preview = URL.createObjectURL(file); // For new file uploads, we use URL.createObjectURL
+            setServiceUploads(newServices);
+        }
     };
 
-    const onSubmitHero = () => {
+    // Helper function to determine the image source
+    const getImageSource = (imageName) => {
+        // If the preview starts with blob: or data:, it's a new file being previewed
+        if (imageName && (imageName.startsWith('blob:') || imageName.startsWith('data:'))) {
+            return imageName;
+        }
+        // Otherwise, it's a saved image and we need to construct the path
+        return imageName ? `/api/images/assets/${imageName}` : "";
+    };
 
-    }
+    const handleSubmitHero = async () => {
+        setLayoutConfig(prev => ({ ...prev, loading: true }));
+        toast.loading("Processing...");
 
-    const onSubmitService = () => {
+        const formData = new FormData();
 
+        // Add hero description
+        formData.append("heroDesc", heroForm.heroDesc);
+
+        // Add the hero image file if it exists
+        if (heroForm.file) {
+            formData.append("heroImg", heroForm.file);
+        }
+
+        console.log(heroForm)
+
+        try {
+            await updateHeroAPI(formData);
+            toast.dismiss();
+            toast.success("Successfully updated hero section");
+            setEditingMode('isEditingHero', false);
+            await fetchLayoutConfiguration();
+        } catch (err:any) {
+            toast.dismiss();
+            toast.error(err.message || "Failed to update hero section");
+            setLayoutConfig(prev => ({ ...prev, loading: false }));
+        }
+    };
+
+    const handleSubmitServices = async () => {
+        setLayoutConfig(prev => ({ ...prev, loading: true }));
+        toast.loading("Processing...");
+
+        const formData = new FormData();
+
+        // Add service data to formData
+        serviceUploads.forEach((service, index) => {
+            formData.append(`service[${index}][title]`, service.title);
+            formData.append(`service[${index}][description]`, service.description);
+            if (service.file) {
+                formData.append(`service[${index}][img]`, service.file);
+            } else if (service.preview && !service.preview.startsWith('blob:') && !service.preview.startsWith('data:')) {
+                // If preview is not a blob URL (meaning it's an existing image filename), pass it along
+                formData.append(`service[${index}][imgName]`, service.preview);
+            }
+        });
+
+        try {
+            // await updateServicesAPI(formData);
+            toast.dismiss();
+            toast.success("Successfully updated services section");
+            setEditingMode('isEditingService', false);
+            await fetchLayoutConfiguration();
+        } catch (err:any) {
+            toast.dismiss();
+            toast.error(err.message || "Failed to update services section");
+            setLayoutConfig(prev => ({ ...prev, loading: false }));
+        }
+    };
+
+    const handleCancelEdit = (formName) => {
+        setEditingMode(formName, false);
+
+        // Reset form values to original values
+        if (formName === 'isEditingHero') {
+            setHeroForm({
+                heroDesc: layoutConfig.heroDesc,
+                file: null,
+                preview: layoutConfig.heroImg // Store just the filename
+            });
+        } else if (formName === 'isEditingService') {
+            // Reset service uploads to original values
+            if (layoutConfig.services.length > 0) {
+                setServiceUploads(layoutConfig.services.map((service:any) => ({
+                    title: service.title || "",
+                    description: service.description || "",
+                    file: null,
+                    preview: service.img || "" // Store just the filename
+                })));
+            }
+        }
+    };
+
+    // Effects
+    // This effect marks when we're client-side
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    // This effect only runs on the client after mounting
+    useEffect(() => {
+        if (isMounted) {
+            fetchLayoutConfiguration();
+        }
+    }, [fetchLayoutConfiguration, isMounted]);
+
+    // Skip rendering certain parts during SSR
+    if (!isMounted) {
+        return <div>
+            <Breadcrumb items={["Settings", "Layout"]} />
+            <HorizontalLineLoading />
+        </div>;
     }
 
     return (
         <>
-            <Breadcrumb items={["Settings", "Layout"]}/>
-            <div className="d-flex flex-column gap-4">
-                <div>
-                    <div className="d-flex flex-row justify-content-between">
-                        <h5 className={"fw-bold text-foreground"}>Hero</h5>
-                        <div className={"d-flex flex-row gap-3"}>
-                            {isEditingHero &&
-                                <ButtonIcon severity={"danger"} icon={"bi-x"} cb={() => {
-                                    setEditingHero(false)
-                                    // autoFillForm()
-                                }}/>}
-                            {isEditingHero && < ButtonIcon severity={"primary"} icon={"bi-check"} cb={() => {
-                                setEditingHero(!isEditingHero)
-                                onSubmitHero()
-                            }}/>}
+            <Breadcrumb items={["Settings", "Layout"]} />
+            {layoutConfig.loading && <HorizontalLineLoading />}
 
-                            {!isEditingHero && < ButtonIcon severity={"primary"} icon={"bi-pen"} cb={() => {
-                                setEditingHero(!isEditingHero)
-                            }}/>}
-                        </div>
-                    </div>
-                    <form id={"heroForm"}>
-                        <fieldset disabled={!isEditingHero} className="mt-3">
-                            <label className="text-black-custom">Deskripsi :</label>
+            <div className="d-flex flex-column gap-4">
+                {/* Hero Section */}
+                <FormSection
+                    title="Hero"
+                    isEditing={formStates.isEditingHero}
+                    setIsEditing={(value) => setEditingMode('isEditingHero', value)}
+                    onSubmit={handleSubmitHero}
+                    onCancel={() => handleCancelEdit('isEditingHero')}
+                >
+                    <div className="mt-3">
+                        <fieldset disabled={!formStates.isEditingHero}>
+                            <label className="text-black-custom">Description:</label>
                             <textarea
                                 className="form-control"
-                                name={"deskripsi"}
+                                value={heroForm.heroDesc}
+                                onChange={handleHeroDescChange}
                                 rows={5}
-                            ></textarea>
-                            <label className="text-black-custom mt-3">Ganti Gambar :</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                name={"img"}
-                                className="form-control"
-                                onChange={handleHeroImageChange}
                             />
-                            {heroImageUrl && (
-                                <img src={heroImageUrl} alt="Hero Image" className="imagePreview"/>
-                            )}
-                        </fieldset>
-                    </form>
-                </div>
 
-                <div>
-                    <div className="d-flex flex-row justify-content-between mt-5">
-                        <h5 className={"fw-bold text-foreground"}>Layanan Utama</h5>
-                        <div className={"d-flex flex-row gap-3"}>
-                            {isEditingService &&
-                                <ButtonIcon severity={"danger"} icon={"bi-x"} cb={() => {
-                                    setIsEditingService(false)
-                                    // autoFillForm()
-                                }}/>}
-                            {isEditingService && < ButtonIcon severity={"primary"} icon={"bi-check"} cb={() => {
-                                setIsEditingService(!isEditingService)
-                                onSubmitService()
-                            }}/>}
-
-                            {!isEditingService && < ButtonIcon severity={"primary"} icon={"bi-pen"} cb={() => {
-                                setIsEditingService(!isEditingService)
-                            }}/>}
-                        </div>
-                    </div>
-                    <form id={"servicesForm"}>
-                        <fieldset disabled={!isEditingService} className={"mt-4 d-flex flex-column gap-5 mb-5"}>
-                            {serviceImages.map((service, index) => (
-                                <div key={index} className="d-flex flex-column gap-2">
-                                    <label className="text-black-custom">Judul Layanan {index + 1} :</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={service.title}
-                                        onChange={handleServiceChange(index, "title")}
-                                    />
-                                    <label className="text-black-custom">Deskripsi Layanan {index + 1} :</label>
-                                    <textarea
-                                        className="form-control"
-                                        rows={3}
-                                        value={service.description}
-                                        onChange={handleServiceChange(index, "description")}
-                                    />
-                                    <label className="text-black-custom">Ganti Gambar Layanan
-                                        Utama {index + 1} :</label>
+                            {formStates.isEditingHero && (
+                                <>
+                                    <label className="text-black-custom mt-3">Change Image:</label>
                                     <input
                                         type="file"
                                         accept="image/*"
                                         className="form-control"
-                                        onChange={handleServiceImageChange(index)}
+                                        onChange={handleHeroImageChange}
                                     />
-                                    {service.imageUrl && (
-                                        <img src={service.imageUrl}
-                                             alt={`Service Image ${index + 1}`}
-                                             className="imagePreview"/>
-                                    )}
+                                </>
+                            )}
+
+                            {heroForm.preview && (
+                                <div className="mt-2">
+                                    <img
+                                        src={getImageSource(heroForm.preview)}
+                                        alt="Hero Preview"
+                                        className="img-fluid mt-2 imagePreview"
+                                        style={{ maxHeight: '200px' }}
+                                    />
                                 </div>
-                            ))}
+                            )}
                         </fieldset>
-                    </form>
-                </div>
+                    </div>
+                </FormSection>
+
+                {/* Services Section */}
+                <FormSection
+                    title="Main Services"
+                    isEditing={formStates.isEditingService}
+                    setIsEditing={(value) => setEditingMode('isEditingService', value)}
+                    onSubmit={handleSubmitServices}
+                    onCancel={() => handleCancelEdit('isEditingService')}
+                >
+                    <fieldset disabled={!formStates.isEditingService}
+                              className="mt-4 d-flex flex-column gap-5 mb-5">
+                        {serviceUploads.map((service, index) => (
+                            <div key={index} className="d-flex flex-column gap-2">
+                                <label className="text-black-custom">Service Title {index + 1}:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={service.title}
+                                    onChange={handleServiceChange(index, "title")}
+                                />
+
+                                <label className="text-black-custom">Service Description {index + 1}:</label>
+                                <textarea
+                                    className="form-control"
+                                    rows={3}
+                                    value={service.description}
+                                    onChange={handleServiceChange(index, "description")}
+                                />
+
+                                {formStates.isEditingService && (
+                                    <>
+                                        <label className="text-black-custom">
+                                            Change Service Image {index + 1}:
+                                        </label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="form-control"
+                                            onChange={handleServiceImageChange(index)}
+                                        />
+                                    </>
+                                )}
+
+                                {service.preview && (
+                                    <div className="mt-2">
+                                        <img
+                                            src={getImageSource(service.preview)}
+                                            alt={`Service ${index + 1} Preview`}
+                                            className="img-fluid mt-2 imagePreview"
+                                            style={{ maxHeight: '150px' }}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </fieldset>
+                </FormSection>
             </div>
         </>
-    )
-        ;
+    );
 }
