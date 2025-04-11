@@ -9,11 +9,9 @@ type IServices = {
 }
 
 export function Services({data}) {
-    console.log(data, 'data')
 
     const card = () => {
         return data?.map((service, index) => {
-            console.log(service, "img")
             return <div className={"bg-white-custom services-card"} key={index}>
                 <Image
                     src={`/api/images/assets/${service.img}`}

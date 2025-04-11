@@ -6,19 +6,18 @@ import React from "react";
 import {capitalizeWords} from "@/utils/capitilize";
 import {cookies} from "next/headers";
 
-export async function Footer({socialMediaData, tokoData}) {
-    const title = "PT. Mitra Kirim Horeca"
+export async function Footer({appName,appLogo, socialMediaData, tokoData}) {
     const cookieStore = await cookies()
     const accessToken = cookieStore.get("X_APP_1")?.value
 
     return <div className={"footer"}>
         <div className={"d-flex flex-row text-background"}>
             <div className="col-6 col-lg-4">
-                <h3>{title}</h3>
-                <div className={"bg-white-custom rounded col-5 text-center mt-4"}>
+                <h5>{appName}</h5>
+                <div className={"footer-logo rounded col-5 text-center mt-4"}>
                     <Image
                         className={"logo-img"}
-                        src={"/images/logo.png"} alt={"mitra kirim"}
+                        src={`/api/images/assets/${appLogo}`} alt={"mitra kirim"}
                         width={895} height={895}
                     />
                 </div>
@@ -36,7 +35,7 @@ export async function Footer({socialMediaData, tokoData}) {
             </div>
 
             <div className="col"></div>
-            {accessToken ?  <Link href={"/admin"}>Back to Dashboard</Link>: <Link href={"/login"}>Login</Link>}
+            {accessToken ?  <Link href={"/admin"}><small>Back to Dashboard</small></Link>: <Link href={"/login"}>Login</Link>}
         </div>
     </div>
 }

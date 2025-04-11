@@ -347,12 +347,26 @@ td:first-child, th:first-child {
         background-color: var(--foreground) !important;
         color: var(--background) !important;
         padding: 2vw 5vw;
-        font-size: 3vw;
+        font-size: 3vw !important;
     }
 
     .footer {
         padding: 10vw;
         background-color: var(--foreground);
-        min-height: 50vh;
+        min-height: 65vh;
+    }
+    .footer-logo{
+        width: 20vw;
+    }
+
+    .footer a{
+        font-size: 0.6rem;
+    }
+
+    input[type=text], input[type=email]{
+        font-size: 0.8rem !important;
+    }
+    textarea{
+        font-size: 0.8rem !important;
     }
 }

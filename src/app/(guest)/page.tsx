@@ -75,7 +75,7 @@ export default async function Home() {
             <Testimonial slides={testimonials}/>
             <FormSuggestion/>
             <Location locationList={location}/>
-            <Footer socialMediaData={socialData} tokoData={tokoData}/>
+            <Footer appName={appName} appLogo={appLogo} socialMediaData={socialData} tokoData={tokoData}/>
         </>
     );
 }

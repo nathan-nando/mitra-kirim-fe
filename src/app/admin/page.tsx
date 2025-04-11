@@ -13,7 +13,7 @@ export default function Admin() {
     return <>
         <Breadcrumb items={["Dashboard"]}/>
         <div className="d-flex flex-row gap-5 ">
-            <DashboardCard number={20} label={"Pengunjung Hari Ini"}/>
+            <DashboardCard number={0} label={"Pengunjung Hari Ini"}/>
             <DashboardCard number={2} label={"Total Saran"}/>
             <DashboardCard number={5} label={"Total Testimoni"}/>
             <DashboardCard number={2} label={"Total Cabang"}/>

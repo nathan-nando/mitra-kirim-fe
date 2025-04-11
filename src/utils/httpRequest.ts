@@ -3,7 +3,7 @@
 import {getApi} from "@/api/api";
 import {NextResponse} from "next/server";
 import {cookies} from "next/headers";
-import {logout, refreshAPI} from "@/app/(guest)/login/action";
+import {logout} from "@/app/(guest)/login/action";
 
 export async function httpRequest(endpoint: string, params: RequestInit) {
     try {
@@ -11,9 +11,7 @@ export async function httpRequest(endpoint: string, params: RequestInit) {
         const accessToken = cookieStore.get("X_APP_1")?.value
 
         if (accessToken && await isTokenExpired(accessToken)) {
-            console.log("TOKEN EXPIRED LOGOUT")
             await logout()
-            // console.log("REFRESH OK")
         }
 
         if (!params.headers) {

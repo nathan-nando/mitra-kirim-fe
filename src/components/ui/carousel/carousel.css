@@ -71,3 +71,16 @@
         transform: translate3d(100%, 0, 0);
     }
 }
+
+@media (max-width: 768px) {
+    .embla {
+        height: 20vh;
+    }
+    .embla__slide {
+        height: 20vh;
+    }
+    .embla-image-slide{
+        width: 25vw;
+        height: 12vh;
+    }
+}
